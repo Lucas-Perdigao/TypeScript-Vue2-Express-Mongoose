@@ -8,75 +8,53 @@ export class UserRepository implements IUserRepository {
   constructor(private readonly userModel: Model<UserType>) {}
 
   async getAll(): Promise<UserType[] | null> {
-    try {
-      return await this.userModel.find({deletedAt: null});
-    } catch (error: any) {
-      throw new Error(error);
-    }
+    const users = this.userModel.find({ deletedAt: null }).populate("appointments").exec()
+    return users;
   }
 
   async getByEmail(email: string): Promise<UserType | null> {
-    try {
-      const user = (await this.userModel.findOne({ email: email, deletedAt: null })) as UserType;
-      return user;
-    } catch (error: any) {
-      throw new Error(error);
-    }
+    const user = await this.userModel.findOne({
+      email: email,
+      deletedAt: null,
+    }).populate("appointments").exec()
+    return user;
   }
 
   async getById(id: string): Promise<UserType | null> {
-    try {
-      if (!isValidObjectId(id)) {
-        throw new Error(ErrorMessages.ID_NOT_VALID(id));
-      }
-
-      const user = (await this.userModel.findOne({_id: id, deletedAt: null})) as UserType;
-      return user;
-    } catch (error: any) {
-      throw new Error(error);
+    if (!isValidObjectId(id)) {
+      throw new Error(ErrorMessages.ID_NOT_VALID(id));
     }
+
+    const user = await this.userModel.findOne({ _id: id, deletedAt: null }).populate("appointments").exec();
+    return user;
   }
 
   async create(user: UserDTO): Promise<UserType> {
-    try {
-      const newUser = (await this.userModel.create(user)) as UserType;
-      return newUser;
-    } catch (error: any) {
-      throw new Error(error);
-    }
+    const newUser = await this.userModel.create(user);
+    return newUser;
   }
 
   async update(id: string, userData: UserDTO): Promise<UserType> {
-    try {
-      if (!isValidObjectId(id)) {
-        throw new Error(ErrorMessages.ID_NOT_VALID(id));
-      }
-
-      const updatedUser = (await this.userModel.findByIdAndUpdate(
-        id,
-        userData,
-        { new: true }
-      )) as UserType;
-      return updatedUser;
-    } catch (error: any) {
-      throw new Error(error);
+    if (!isValidObjectId(id)) {
+      throw new Error(ErrorMessages.ID_NOT_VALID(id));
     }
+
+    const updatedUser = await this.userModel.findByIdAndUpdate(id, userData, {
+      new: true,
+    }).populate("appointments").exec();
+    return updatedUser as UserType;
   }
 
   async softDelete(id: string): Promise<UserType> {
-    try {
-      if (!isValidObjectId(id)) {
-        throw new Error(ErrorMessages.ID_NOT_VALID(id));
-      }
-
-      const deletedUser = (await this.userModel.findByIdAndUpdate(
-        id,
-        { deletedAt: new Date() },
-        { new: true }
-      )) as UserType;
-      return deletedUser;
-    } catch (error: any) {
-      throw new Error(error);
+    if (!isValidObjectId(id)) {
+      throw new Error(ErrorMessages.ID_NOT_VALID(id));
     }
+
+    const deletedUser = await this.userModel.findByIdAndUpdate(
+      id,
+      { deletedAt: new Date() },
+      { new: true }
+    ).populate("appointments").exec()
+    return deletedUser as UserType;
   }
 }

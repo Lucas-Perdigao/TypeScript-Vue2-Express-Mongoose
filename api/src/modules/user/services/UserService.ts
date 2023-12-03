@@ -5,92 +5,80 @@ import { UserType } from "../model/UserModel";
 import { IUserService } from "./UserServiceInterface";
 import bcrypt from "bcrypt";
 
-export class UserService implements IUserService{
+export class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}
 
   async getAll(): Promise<UserType[] | null> {
-    try {
-      const users = await this.userRepository.getAll();
+    const users = await this.userRepository.getAll();
 
-      if (!users) {
-        throw new Error(ErrorMessages.NOT_FOUND("Users"));
-      }
-
-      return users;
-    } catch (error: any) {
-      throw new Error(error);
+    if (!users) {
+      throw new Error(ErrorMessages.NOT_FOUND("Users"));
     }
+
+    return users;
   }
 
   async getByEmail(email: string): Promise<UserType | null> {
-    try {
-      const user = await this.userRepository.getByEmail(email);
+    const user = await this.userRepository.getByEmail(email);
 
-      if (!user) {
-        throw new Error(ErrorMessages.NOT_FOUND("User"));
-      }
-
-      return user;
-    } catch (error: any) {
-      throw new Error(error);
+    if (!user) {
+      throw new Error(ErrorMessages.NOT_FOUND("User"));
     }
+
+    return user;
   }
 
   async getById(id: string): Promise<UserType | null> {
-    try {
-      const user = await this.userRepository.getById(id);
+    const user = await this.userRepository.getById(id);
 
-      if (!user) {
-        throw new Error(ErrorMessages.NOT_FOUND("User"));
-      }
-
-      return user;
-    } catch (error: any) {
-      throw new Error(error);
+    if (!user) {
+      throw new Error(ErrorMessages.NOT_FOUND("User"));
     }
+
+    return user;
   }
 
   async create(user: UserDTO): Promise<UserType | null> {
-    try {
-      user.password = await this.hashPassword(user.password);
-      const newUser = await this.userRepository.create(user);
+    user.password = await this.hashPassword(user.password);
+    const newUser = await this.userRepository.create(user);
 
-      if (!newUser) {
-        throw new Error(ErrorMessages.CANNOT_CREATE("User"));
-      }
-
-      return newUser;
-    } catch (error: any) {
-      throw new Error(error);
+    if (!newUser) {
+      throw new Error(ErrorMessages.CANNOT_CREATE("User"));
     }
+
+    return newUser;
   }
 
   async update(id: string, userData: UserDTO): Promise<UserType | null> {
-    try {
-      const updatedUser = await this.userRepository.update(id, userData);
+    const user = await this.userRepository.getById(id);
 
-      if (!updatedUser) {
-        throw new Error(ErrorMessages.CANNOT_UPDATE("User"));
-      }
-
-      return updatedUser;
-    } catch (error: any) {
-      throw new Error(error);
+    if (!user) {
+      throw new Error(ErrorMessages.NOT_FOUND("User"));
     }
+
+    const updatedUser = await this.userRepository.update(id, userData);
+
+    if (!updatedUser) {
+      throw new Error(ErrorMessages.CANNOT_UPDATE("User"));
+    }
+
+    return updatedUser;
   }
 
   async softDelete(id: string): Promise<UserType | null> {
-    try {
-      const deletedUser = await this.userRepository.softDelete(id);
+    const user = await this.userRepository.getById(id);
 
-      if (!deletedUser) {
-        throw new Error(ErrorMessages.CANNOT_DELETE("User"));
-      }
-
-      return deletedUser;
-    } catch (error: any) {
-      throw new Error(error);
+    if (!user) {
+      throw new Error(ErrorMessages.NOT_FOUND("User"));
     }
+
+    const deletedUser = await this.userRepository.softDelete(id);
+
+    if (!deletedUser) {
+      throw new Error(ErrorMessages.CANNOT_DELETE("User"));
+    }
+
+    return deletedUser;
   }
 
   private async hashPassword(password: string): Promise<string> {

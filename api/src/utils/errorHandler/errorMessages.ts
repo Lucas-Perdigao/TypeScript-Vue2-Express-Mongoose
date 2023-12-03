@@ -18,4 +18,16 @@ export class ErrorMessages {
   static CANNOT_DELETE(model: string){
     return `${model} cannot be deleted.`
   }
+
+  static MAX_DURATION_EXCEEDED(minutes: number){
+    return `Maximum appointment duration is ${minutes} minutes.`
+  }
+
+  static MIN_DURATION_EXCEEDED(minutes: number){
+    return `Minimum appointment duration is ${minutes} minutes.`
+  }
+
+  static BROKER_BUSY(name: string){
+    return `Broker ${name} is already busy during this timeframe.`
+  }
 }

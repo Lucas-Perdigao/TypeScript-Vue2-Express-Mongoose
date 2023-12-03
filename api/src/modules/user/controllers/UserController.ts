@@ -74,6 +74,7 @@ export class UserController implements IUserController{
     try {
       const { id } = req.params
       const userData: UserDTO = req.body;
+      await userSchemaValidator.validate(userData, { abortEarly: false });
       const updatedUser = await this.userService.update(id, userData);
       res
         .status(StatusCode.OK)

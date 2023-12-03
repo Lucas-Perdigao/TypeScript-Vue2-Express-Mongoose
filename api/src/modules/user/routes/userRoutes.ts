@@ -3,9 +3,9 @@ import { userModule } from '../factories/UserFactory'
 
 export const userRoutes = Router()
 
-userRoutes.get('/users', userModule.getAll.bind(userModule))
-userRoutes.get('/users/find', userModule.getByEmail.bind(userModule))
-userRoutes.get('/users/:id', userModule.getById.bind(userModule))
-userRoutes.post('/users', userModule.create.bind(userModule))
-userRoutes.put('/users/:id', userModule.update.bind(userModule))
-userRoutes.delete('/users/:id', userModule.softDelete.bind(userModule))
+userRoutes.get('/', userModule.getAll.bind(userModule))
+userRoutes.get('/find', userModule.getByEmail.bind(userModule))
+userRoutes.get('/:id', userModule.getById.bind(userModule))
+userRoutes.post('/', userModule.create.bind(userModule))
+userRoutes.put('/:id', userModule.update.bind(userModule))
+userRoutes.delete('/:id', userModule.softDelete.bind(userModule))

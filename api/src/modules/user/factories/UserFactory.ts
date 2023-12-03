@@ -5,10 +5,10 @@ import { UserService } from "../services/UserService";
 
 class UserFactory {
   static getInstance() {
-    const repository = new UserRepository(UserModel);
-    const service = new UserService(repository);
-    const controller = new UserController(service);
-    return controller;
+    const userRepository = new UserRepository(UserModel);
+    const userService = new UserService(userRepository);
+    const userController = new UserController(userService);
+    return userController;
   }
 }
 

@@ -1,4 +1,4 @@
-import { InferSchemaType, Schema, Model, model, Types } from "mongoose";
+import { InferSchemaType, Schema, Model, model, Types} from "mongoose";
 
 const userSchema = new Schema({
   name: {
@@ -21,6 +21,10 @@ const userSchema = new Schema({
     enum: ['client', 'broker'],
     required: true,
   },
+  appointments: [{
+    type: Types.ObjectId,
+    ref: "Appointment"
+  }],
   deletedAt: {
     type: Date,
     default: null
@@ -31,4 +35,4 @@ const userSchema = new Schema({
 
 export type UserType = InferSchemaType<typeof userSchema>
 
-export const UserModel = Model<UserType> = model("User", userSchema)
+export const UserModel: Model<UserType> = model("User", userSchema)
