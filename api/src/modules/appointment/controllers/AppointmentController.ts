@@ -4,8 +4,9 @@ import { Request, Response } from "express";
 import { appointmentDatesSchema } from "../utils/validators/appointmentDatesValidator";
 import { AppointmentDTO } from "../dtos/AppointmentDTO";
 import { appointmentSchemaValidator } from "../utils/validators/appointmentSchemaValidator";
+import { IAppointmentController } from "./AppointmentControllerInterface";
 
-export class AppointmentController {
+export class AppointmentController implements IAppointmentController{
   constructor(private readonly appointmentService: IAppointmentService) {}
 
   async getAll(req: Request, res: Response) {
