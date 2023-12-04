@@ -8,7 +8,7 @@ export class UserRepository implements IUserRepository {
   constructor(private readonly userModel: Model<UserType>) {}
 
   async getAll(): Promise<UserType[] | null> {
-    const users = this.userModel.find({ deletedAt: null }).populate("appointments").exec()
+    const users = this.userModel.find({ deletedAt: null })
     return users;
   }
 
@@ -16,7 +16,7 @@ export class UserRepository implements IUserRepository {
     const user = await this.userModel.findOne({
       email: email,
       deletedAt: null,
-    }).populate("appointments").exec()
+    })
     return user;
   }
 
@@ -25,7 +25,7 @@ export class UserRepository implements IUserRepository {
       throw new Error(ErrorMessages.ID_NOT_VALID(id));
     }
 
-    const user = await this.userModel.findOne({ _id: id, deletedAt: null }).populate("appointments").exec();
+    const user = await this.userModel.findOne({ _id: id, deletedAt: null })
     return user;
   }
 
@@ -41,7 +41,7 @@ export class UserRepository implements IUserRepository {
 
     const updatedUser = await this.userModel.findByIdAndUpdate(id, userData, {
       new: true,
-    }).populate("appointments").exec();
+    })
     return updatedUser as UserType;
   }
 
@@ -54,7 +54,7 @@ export class UserRepository implements IUserRepository {
       id,
       { deletedAt: new Date() },
       { new: true }
-    ).populate("appointments").exec()
+    )
     return deletedUser as UserType;
   }
 }

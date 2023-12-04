@@ -30,4 +30,16 @@ export class ErrorMessages {
   static BROKER_BUSY(name: string){
     return `Broker ${name} is already busy during this timeframe.`
   }
+
+  static INVALID_DATE(){
+    return `Invalid date parameters`
+  }
+
+  static INVALID_EMAIL_PASSWORD(){
+    return `Invalid email or password.`
+  }
+
+  static UNAUTHORIZED(){
+    return `This requisiton is unauthorized.`
+  }
 }

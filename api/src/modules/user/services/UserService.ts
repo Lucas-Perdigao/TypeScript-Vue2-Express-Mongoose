@@ -3,7 +3,7 @@ import { ErrorMessages } from "../../../utils/errorHandler/errorMessages";
 import { IUserRepository } from "../repositories/UserRepositoryInterface";
 import { UserType } from "../model/UserModel";
 import { IUserService } from "./UserServiceInterface";
-import bcrypt from "bcrypt";
+import { Crypt } from "../../../utils/crypt/Crypt";
 
 export class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -83,7 +83,7 @@ export class UserService implements IUserService {
 
   private async hashPassword(password: string): Promise<string> {
     const hashLoops = 10;
-    const hashedPassword = await bcrypt.hash(password, hashLoops);
+    const hashedPassword = Crypt.encrypt(password, hashLoops);
 
     return hashedPassword;
   }

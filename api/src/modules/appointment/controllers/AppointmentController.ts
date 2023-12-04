@@ -103,9 +103,7 @@ export class AppointmentController implements IAppointmentController{
     try {
       const { id } = req.params;
       const appointmentData: AppointmentDTO = req.body;
-      await appointmentSchemaValidator.validate(appointmentData, {
-        abortEarly: false,
-      });
+
       const updatedAppointment = await this.appointmentService.update(
         id,
         appointmentData
@@ -114,12 +112,6 @@ export class AppointmentController implements IAppointmentController{
         .status(StatusCode.OK)
         .json(updatedAppointment);
     } catch (error: any) {
-      if (error.name === "ValidationError") {
-        const errors = error.errors.map((err: string) => ({ message: err }));
-        res.status(StatusCode.BAD_REQUEST).json({ errors });
-        return
-      }
-
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
         .json({ error: error.message });

@@ -21,10 +21,6 @@ const userSchema = new Schema({
     enum: ['client', 'broker'],
     required: true,
   },
-  appointments: [{
-    type: Types.ObjectId,
-    ref: "Appointment"
-  }],
   deletedAt: {
     type: Date,
     default: null
@@ -34,5 +30,11 @@ const userSchema = new Schema({
 })
 
 export type UserType = InferSchemaType<typeof userSchema>
+
+export type MongooseUserType = UserType & {
+  _id: Types.ObjectId | string
+  createdAt: Date,
+  UpdatedAt: Date
+}
 
 export const UserModel: Model<UserType> = model("User", userSchema)
