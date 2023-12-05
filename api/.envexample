@@ -1,2 +1,3 @@
 MONGO_URL="your MongoDB string here"
 PORT= your connection port here
+JWT_SECRET_KEY= "a hash for your token generation here"

@@ -42,4 +42,8 @@ export class ErrorMessages {
   static UNAUTHORIZED(){
     return `This requisiton is unauthorized.`
   }
+
+  static ROLE_NOT_ALLOWED(role: string){
+    return `The role ${role} is not allowed in this requistion.`
+  }
 }

@@ -5,6 +5,8 @@ import { appointmentDatesSchema } from "../utils/validators/appointmentDatesVali
 import { AppointmentDTO } from "../dtos/AppointmentDTO";
 import { appointmentSchemaValidator } from "../utils/validators/appointmentSchemaValidator";
 import { IAppointmentController } from "./AppointmentControllerInterface";
+import jwt, { JwtPayload } from 'jsonwebtoken'
+import { ErrorMessages } from "../../../utils/errorHandler/errorMessages";
 
 export class AppointmentController implements IAppointmentController{
   constructor(private readonly appointmentService: IAppointmentService) {}
@@ -76,13 +78,26 @@ export class AppointmentController implements IAppointmentController{
 
   async create(req: Request, res: Response) {
     try {
+      const { authorization } = req.headers;
+
+      if(authorization){
+        const token = authorization.split(' ')[1]
+        const payload = jwt.decode(token) as JwtPayload
+
+        if(payload && payload._doc && payload._doc.role == 'broker'){
+          res.status(StatusCode.BAD_REQUEST).json(ErrorMessages.ROLE_NOT_ALLOWED('broker'))
+        }
+      }
+
       const appointmentData: AppointmentDTO = req.body;
       await appointmentSchemaValidator.validate(appointmentData, {
         abortEarly: false,
       });
+
       const newAppointment = await this.appointmentService.create(
         appointmentData
       );
+      
       res
         .status(StatusCode.CREATED)
         .json(newAppointment);
