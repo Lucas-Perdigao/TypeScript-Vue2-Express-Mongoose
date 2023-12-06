@@ -39,6 +39,11 @@ export class UserRepository implements IUserRepository {
       throw new Error(ErrorMessages.ID_NOT_VALID(id));
     }
 
+    const user = await this.getById(id)
+    if(!user){
+      throw new Error(ErrorMessages.NOT_FOUND("User"))
+    }
+
     const updatedUser = await this.userModel.findByIdAndUpdate(id, userData, {
       new: true,
     })

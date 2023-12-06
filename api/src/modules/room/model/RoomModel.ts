@@ -3,7 +3,8 @@ import { InferSchemaType, Model, Schema, Types, model } from "mongoose";
 const roomSchema = new Schema({
   appointment: {
     type: Types.ObjectId,
-    required: true
+    required: true,
+    ref: "Appointment"
   },
   isAvailable: {
     type: Types.ObjectId,

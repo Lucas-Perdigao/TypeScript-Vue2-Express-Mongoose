@@ -8,113 +8,92 @@ export class AppointmentRepository implements IAppointmentRepository {
   constructor(private readonly appointmentModel: Model<AppointmentType>) {}
 
   async getAll(): Promise<AppointmentType[]> {
-    try {
-      const appointments = this.appointmentModel
-        .find({ deletedAt: null })
-        .populate("client")
-        .populate("broker");
-      return appointments;
-    } catch (error: any) {
-      throw new Error(error);
-    }
+    const appointments = this.appointmentModel
+      .find({ deletedAt: null })
+      .populate("client")
+      .populate("broker");
+    return appointments;
   }
 
   async getByDates(
     appointmentStart: Date,
     appointmentEnd: Date
   ): Promise<AppointmentType[]> {
-    try {
-      const appointments = await this.appointmentModel
-        .find({
-          appointmentStart: { $gte: appointmentStart },
-          appointmentEnd: { $lte: appointmentEnd },
-          deletedAt: null,
-        })
-        .populate("client")
-        .populate("broker");
-      return appointments;
-    } catch (error: any) {
-      throw new Error(error);
-    }
+    const appointments = await this.appointmentModel
+      .find({
+        appointmentStart: { $gte: appointmentStart },
+        appointmentEnd: { $lte: appointmentEnd },
+        deletedAt: null,
+      })
+      .populate("client")
+      .populate("broker");
+    return appointments;
   }
 
   async getById(id: string): Promise<AppointmentType | null> {
-    try {
-      if (!isValidObjectId(id)) {
-        throw new Error(ErrorMessages.ID_NOT_VALID(id));
-      }
+    if (!isValidObjectId(id)) {
+      throw new Error(ErrorMessages.ID_NOT_VALID(id));
+    }
 
-      const appointment = await this.appointmentModel.findOne({
+    const appointment = await this.appointmentModel
+      .findOne({
         _id: id,
         deletedAt: null,
-      })        
-        .populate("client")
-        .populate("broker");
-      return appointment;
-    } catch (error: any) {
-      throw new Error(error);
-    }
+      })
+      .populate("client")
+      .populate("broker");
+    return appointment;
   }
 
   async getByUserId(userId: string): Promise<AppointmentType[]> {
-    try {
-      if (!isValidObjectId(userId)) {
-        throw new Error(ErrorMessages.ID_NOT_VALID(userId));
-      }
+    if (!isValidObjectId(userId)) {
+      throw new Error(ErrorMessages.ID_NOT_VALID(userId));
+    }
 
-      const appointments = await this.appointmentModel.find({
+    const appointments = await this.appointmentModel
+      .find({
         $or: [{ client: userId }, { broker: userId }],
         deletedAt: null,
       })
-        .populate("client")
-        .populate("broker");
-      return appointments;
-    } catch (error: any) {
-      throw new Error(error);
-    }
+      .populate("client")
+      .populate("broker");
+    return appointments;
   }
 
   async create(appointment: AppointmentDTO): Promise<AppointmentType> {
-    try {
-      const newAppointment = await this.appointmentModel.create(appointment);
-      return newAppointment;
-    } catch (error: any) {
-      throw new Error(error);
-    }
+    const newAppointment = await this.appointmentModel.create(appointment);
+    return newAppointment;
   }
 
   async update(
     id: string,
     appointmentData: AppointmentDTO
   ): Promise<AppointmentType> {
-    try {
-      if (!isValidObjectId(id)) {
-        throw new Error(ErrorMessages.ID_NOT_VALID(id));
-      }
-
-      const updatedAppointment = await this.appointmentModel
-        .findByIdAndUpdate(id, appointmentData, { new: true })
-        .populate("client")
-        .populate("broker");
-      return updatedAppointment as AppointmentType;
-    } catch (error: any) {
-      throw new Error(error);
+    if (!isValidObjectId(id)) {
+      throw new Error(ErrorMessages.ID_NOT_VALID(id));
     }
+
+    const appointment = await this.getById(id)
+    if(!appointment){
+      throw new Error(ErrorMessages.NOT_FOUND("Appointment"))
+    }
+
+    const updatedAppointment = await this.appointmentModel
+      .findByIdAndUpdate(id, appointmentData, { new: true })
+      .populate("client")
+      .populate("broker");
+    return updatedAppointment as AppointmentType;
   }
 
   async softDelete(id: string): Promise<AppointmentType> {
-    try {
-      if (!isValidObjectId(id)) {
-        throw new Error(ErrorMessages.ID_NOT_VALID(id));
-      }
-
-      const deletedAppointment = await this.appointmentModel
-        .findByIdAndUpdate(id, { deletedAt: new Date() }, { new: true })
-        .populate("client")
-        .populate("broker");
-      return deletedAppointment as AppointmentType;
-    } catch (error: any) {
-      throw new Error(error);
+    if (!isValidObjectId(id)) {
+      throw new Error(ErrorMessages.ID_NOT_VALID(id));
     }
+
+    const deletedAppointment = await this.appointmentModel
+      .findByIdAndUpdate(id, { deletedAt: new Date() }, { new: true })
+      .populate("client")
+      .populate("broker");
+    return deletedAppointment as AppointmentType;
   }
 }
