@@ -2,11 +2,12 @@ import { StatusCode } from "../../../utils/statusCodes/StatusCode";
 import { IAppointmentService } from "../services/AppointmentServiceInterface";
 import { Request, Response } from "express";
 import { appointmentDatesSchema } from "../utils/validators/appointmentDatesValidator";
-import { AppointmentDTO } from "../dtos/AppointmentDTO";
+import { CreateAppointmentDTO } from "../dtos/CreateAppointmentDTO";
 import { appointmentSchemaValidator } from "../utils/validators/appointmentSchemaValidator";
 import { IAppointmentController } from "./AppointmentControllerInterface";
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { ErrorMessages } from "../../../utils/errorHandler/errorMessages";
+import { UpdateAppointmentDTO } from "../dtos/UpdateAppointmentDTO";
 
 export class AppointmentController implements IAppointmentController{
   constructor(private readonly appointmentService: IAppointmentService) {}
@@ -89,7 +90,7 @@ export class AppointmentController implements IAppointmentController{
         }
       }
 
-      const appointmentData: AppointmentDTO = req.body;
+      const appointmentData: CreateAppointmentDTO = req.body;
       await appointmentSchemaValidator.validate(appointmentData, {
         abortEarly: false,
       });
@@ -117,7 +118,7 @@ export class AppointmentController implements IAppointmentController{
   async update(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const appointmentData: AppointmentDTO = req.body;
+      const appointmentData: UpdateAppointmentDTO = req.body;
 
       const updatedAppointment = await this.appointmentService.update(
         id,

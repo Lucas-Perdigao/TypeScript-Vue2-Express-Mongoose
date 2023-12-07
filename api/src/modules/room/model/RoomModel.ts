@@ -1,14 +1,18 @@
 import { InferSchemaType, Model, Schema, Types, model } from "mongoose";
 
 const roomSchema = new Schema({
-  appointment: {
-    type: Types.ObjectId,
+  name: {
+    type: String,
     required: true,
-    ref: "Appointment"
+    unique: true
   },
-  isAvailable: {
+  appointments: [{
     type: Types.ObjectId,
-    required: true
+    ref: "Appointment"
+  }],
+  deletedAt: {
+    type: Date,
+    default: null
   }
 }, { timestamps: true})
 

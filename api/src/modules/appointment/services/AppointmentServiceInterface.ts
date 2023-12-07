@@ -1,4 +1,4 @@
-import { AppointmentDTO } from "../dtos/AppointmentDTO";
+import { AppointmentDTO } from "../dtos/CreateAppointmentDTO";
 import { AppointmentType } from "../model/AppointmentModel";
 
 export interface IAppointmentService {

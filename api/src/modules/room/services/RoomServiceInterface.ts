@@ -1,5 +1,5 @@
 import { RoomType } from "../model/RoomModel";
-import { RoomDTO } from "../dtos/RoomDTO";
+import { RoomDTO } from "../dtos/CreateRoomDTO";
 
 export interface IRoomService {
   getAll(): Promise<RoomType[]>;

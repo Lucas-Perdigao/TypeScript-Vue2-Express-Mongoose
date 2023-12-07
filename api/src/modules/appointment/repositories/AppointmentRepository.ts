@@ -1,8 +1,9 @@
 import { ErrorMessages } from "../../../utils/errorHandler/errorMessages";
 import { AppointmentType } from "../model/AppointmentModel";
 import { Model, isValidObjectId } from "mongoose";
-import { AppointmentDTO } from "../dtos/AppointmentDTO";
+import { CreateAppointmentDTO } from "../dtos/CreateAppointmentDTO";
 import { IAppointmentRepository } from "./AppointmentRepositoryInterface";
+import { UpdateAppointmentDTO } from "../dtos/UpdateAppointmentDTO";
 
 export class AppointmentRepository implements IAppointmentRepository {
   constructor(private readonly appointmentModel: Model<AppointmentType>) {}
@@ -60,14 +61,14 @@ export class AppointmentRepository implements IAppointmentRepository {
     return appointments;
   }
 
-  async create(appointment: AppointmentDTO): Promise<AppointmentType> {
+  async create(appointment: CreateAppointmentDTO): Promise<AppointmentType> {
     const newAppointment = await this.appointmentModel.create(appointment);
     return newAppointment;
   }
 
   async update(
     id: string,
-    appointmentData: AppointmentDTO
+    appointmentData: UpdateAppointmentDTO
   ): Promise<AppointmentType> {
     if (!isValidObjectId(id)) {
       throw new Error(ErrorMessages.ID_NOT_VALID(id));

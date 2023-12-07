@@ -1,4 +1,5 @@
 import { InferSchemaType, Schema, Model, model, Types} from "mongoose";
+import { userConfig } from "../utils/userConfig";
 
 const userSchema = new Schema({
   name: {
@@ -20,6 +21,10 @@ const userSchema = new Schema({
     type: String,
     enum: ['client', 'broker'],
     required: true,
+  },
+  dailyAppointments: {
+    type: Number,
+    max: userConfig.MAX_DAILY_APPOINTMENTS
   },
   deletedAt: {
     type: Date,

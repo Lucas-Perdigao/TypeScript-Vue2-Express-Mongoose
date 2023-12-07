@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AppointmentDTO } from "../dtos/AppointmentDTO";
+import { AppointmentDTO } from "../dtos/CreateAppointmentDTO";
 
 interface IAppointmentController {
   getAll(req: Request, res: Response): Promise<void>;

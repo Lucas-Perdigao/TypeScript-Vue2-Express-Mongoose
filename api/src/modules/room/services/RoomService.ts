@@ -1,9 +1,11 @@
-import { isValidObjectId } from "mongoose";
+
 import { ErrorMessages } from "../../../utils/errorHandler/errorMessages";
 import { RoomType } from "../model/RoomModel";
 import { IRoomRepository } from "../repositories/RoomRepositoryInterface";
-import { RoomDTO } from "../dtos/RoomDTO";
+import { CreateRoomDTO } from "../dtos/CreateRoomDTO";
 import { IRoomService } from "./RoomServiceInterface";
+import { roomConfig } from "../utils/roomConfig";
+import { UpdateRoomDTO } from "../dtos/UpdateRoomDTO";
 
 export class RoomService implements IRoomService{
   constructor(private readonly roomRepository: IRoomRepository){}
@@ -28,7 +30,12 @@ export class RoomService implements IRoomService{
     return room
   }
 
-  async create(room: RoomDTO): Promise<RoomType> {
+  async create(room: CreateRoomDTO): Promise<RoomType> {
+    const allRooms = await this.roomRepository.getAll()
+    if(allRooms.length >= roomConfig.MAX_ROOMS){
+      throw new Error(ErrorMessages.MAX_NUMBER('rooms'))
+    }
+    
     const newRoom = await this.roomRepository.create(room)
 
     if(!newRoom){
@@ -38,7 +45,7 @@ export class RoomService implements IRoomService{
     return newRoom
   }
 
-  async update(id: string, roomData: RoomDTO): Promise<RoomType> {
+  async update(id: string, roomData: UpdateRoomDTO): Promise<RoomType> {
     const room = await this.roomRepository.getById(id)
 
     if(!room){

@@ -1,8 +1,9 @@
 import { StatusCode } from "../../../utils/statusCodes/StatusCode";
-import { RoomDTO } from "../dtos/RoomDTO";
+import { CreateRoomDTO } from "../dtos/CreateRoomDTO";
 import { IRoomService } from "../services/RoomServiceInterface";
 import { Request, Response } from 'express'
 import { roomSchemaValidator } from "../utils/roomSchemaValidator";
+import { UpdateRoomDTO } from "../dtos/UpdateRoomDTO";
 
 export class RoomController {
   constructor(private readonly roomService: IRoomService){}
@@ -28,7 +29,7 @@ export class RoomController {
 
   async create(req: Request, res: Response){
     try {
-      const roomData: RoomDTO = req.body
+      const roomData: CreateRoomDTO = req.body
       await roomSchemaValidator.validate(roomData, { abortEarly: false})
       const newRoom = await this.roomService.create(roomData)
       res.status(StatusCode.CREATED).json(newRoom)
@@ -46,7 +47,7 @@ export class RoomController {
   async update(req: Request, res: Response){
     try {
       const { id } = req.params
-      const roomData: RoomDTO = req.body;
+      const roomData: UpdateRoomDTO = req.body;
 
       const updatedroom = await this.roomService.update(id, roomData);
       res.status(StatusCode.OK).json(updatedroom);

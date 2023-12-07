@@ -46,4 +46,8 @@ export class ErrorMessages {
   static ROLE_NOT_ALLOWED(role: string){
     return `The role ${role} is not allowed in this requistion.`
   }
+
+  static MAX_NUMBER(model: string){
+    return `Maximum number of ${model} already achieved.`
+  }
 }

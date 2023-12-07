@@ -1,5 +1,5 @@
 import { AppointmentType } from "../model/AppointmentModel";
-import { AppointmentDTO } from "../dtos/AppointmentDTO";
+import { AppointmentDTO } from "../dtos/CreateAppointmentDTO";
 
 export interface IAppointmentRepository {
   getAll(): Promise<AppointmentType[] | null>;

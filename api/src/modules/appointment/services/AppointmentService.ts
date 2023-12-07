@@ -1,21 +1,26 @@
 import { isValidObjectId } from "mongoose";
 import { ErrorMessages } from "../../../utils/errorHandler/errorMessages";
 import { IAppointmentRepository } from "../repositories/AppointmentRepositoryInterface";
-import { AppointmentDTO } from "../dtos/AppointmentDTO";
+import { CreateAppointmentDTO } from "../dtos/CreateAppointmentDTO";
 import { IAppointmentService } from "./AppointmentServiceInterface";
 import { AppointmentType } from "../model/AppointmentModel";
 import { AppointmentDuration } from "../utils/appointmentDuration";
 import { IUserRepository } from "../../user/repositories/UserRepositoryInterface";
 import { MongooseUserType, UserType } from "../../user/model/UserModel";
+import { userConfig } from "../../user/utils/userConfig";
+import { UpdateAppointmentDTO } from "../dtos/UpdateAppointmentDTO";
+import { IRoomRepository } from "../../room/repositories/RoomRepositoryInterface";
+import { RoomType } from "../../room/model/RoomModel";
 
 export class AppointmentService implements IAppointmentService {
   constructor(
     private readonly appointmentRepository: IAppointmentRepository,
-    private readonly userRepository: IUserRepository
+    private readonly userRepository: IUserRepository,
+    private readonly roomRepositoty: IRoomRepository
   ) {}
 
   async getAll(): Promise<AppointmentType[]> {
-    const appointments = await this.appointmentRepository.getAll();
+    const appointments = await this.appointmentRepository.getAll()
 
     if (!appointments) {
       throw new Error(ErrorMessages.NOT_FOUND("Appointments"));
@@ -53,9 +58,7 @@ export class AppointmentService implements IAppointmentService {
     return appointment;
   }
 
-  async getByUserId(
-    userId: string
-  ): Promise<AppointmentType[]> {
+  async getByUserId(userId: string): Promise<AppointmentType[]> {
     if (!isValidObjectId(userId)) {
       throw new Error(ErrorMessages.ID_NOT_VALID(userId));
     }
@@ -69,28 +72,37 @@ export class AppointmentService implements IAppointmentService {
     return appointments;
   }
 
-  async create(appointment: AppointmentDTO): Promise<AppointmentType> {
-    const { appointmentStart, appointmentEnd, broker, client } = appointment;
+  async create(appointment: CreateAppointmentDTO): Promise<AppointmentType> {
+    const { appointmentStart, appointmentEnd, broker, client, room } = appointment;
 
-    this.verifyAppointmentDuration(appointmentStart, appointmentEnd);
+    const {verifiedAppointmentStart, verifiedAppointmentEnd} = this.verifyAndReturnDates(appointmentStart, appointmentEnd)
+
+    this.verifyAppointmentDuration(verifiedAppointmentStart, verifiedAppointmentEnd);
+
+    const appointmentRoom = await this.roomRepositoty.getById(room)
+    if(!appointmentRoom){
+      throw new Error(ErrorMessages.NOT_FOUND("Room"))
+    }
 
     const clientUser = await this.userRepository.getById(client);
-
     if (!clientUser || clientUser.role !== "client") {
       throw new Error(ErrorMessages.NOT_FOUND("Client"));
     }
 
-    const brokerUser = await this.userRepository.getById(broker) as MongooseUserType
-
+    const brokerUser = (await this.userRepository.getById(broker)) as MongooseUserType;
     if (!brokerUser || brokerUser.role !== "broker") {
       throw new Error(ErrorMessages.NOT_FOUND("Broker"));
     }
 
-    await this.verifyBrokerIsAvailable(
-      brokerUser._id.toString(),
-      appointmentStart,
-      appointmentEnd
-    );
+    if (brokerUser.dailyAppointments && brokerUser.dailyAppointments >= userConfig.MAX_DAILY_APPOINTMENTS) {
+      throw new Error(
+        ErrorMessages.MAX_NUMBER("daily appointments for this broker")
+      );
+    }
+
+    await this.verifyBrokerIsAvailable(brokerUser._id.toString(), appointmentStart, appointmentEnd);
+
+    await this.verifyRoomIsAvailable(appointmentRoom, appointmentStart, appointmentEnd)
 
     const newAppointment = await this.appointmentRepository.create(appointment);
 
@@ -98,12 +110,14 @@ export class AppointmentService implements IAppointmentService {
       throw new Error(ErrorMessages.CANNOT_CREATE("Appointment"));
     }
 
+    await this.userRepository.addAppointment(brokerUser._id.toString());
+
     return newAppointment;
   }
 
   async update(
     id: string,
-    appointmentData: AppointmentDTO
+    appointmentData: UpdateAppointmentDTO
   ): Promise<AppointmentType> {
     const user = await this.getById(id);
 
@@ -138,6 +152,12 @@ export class AppointmentService implements IAppointmentService {
     return deletedAppointment;
   }
 
+  private verifyRoomIsAvailable(appointmentRoom: RoomType, appointmentStart: Date, appointmentEnd: Date){
+    const { appointments } = appointmentRoom
+
+
+  }
+
   private async verifyBrokerIsAvailable(
     brokerId: string,
     appointmentStart: Date,
@@ -145,10 +165,10 @@ export class AppointmentService implements IAppointmentService {
   ) {
     const brokerAppointments = await this.appointmentRepository.getByUserId(
       brokerId
-    )
+    );
 
-    if(!brokerAppointments){
-      return
+    if (!brokerAppointments) {
+      return;
     }
 
     const isOverlap = brokerAppointments.some((appointment) =>
@@ -166,12 +186,11 @@ export class AppointmentService implements IAppointmentService {
     end: Date
   ): boolean {
     return (
-      appointment.appointmentStart < end &&
-      appointment.appointmentEnd > start
+      appointment.appointmentStart < end && appointment.appointmentEnd > start
     );
   }
 
-  private verifyAppointmentDuration(appointmentStart: Date, appointmentEnd: Date) {
+  private verifyAndReturnDates(appointmentStart: Date, appointmentEnd: Date){
     if (!(appointmentStart instanceof Date)) {
       appointmentStart = new Date(appointmentStart);
     }
@@ -180,11 +199,22 @@ export class AppointmentService implements IAppointmentService {
       appointmentEnd = new Date(appointmentEnd);
     }
 
-    if (!(appointmentStart instanceof Date) || !(appointmentEnd instanceof Date)) {
+    if (
+      !(appointmentStart instanceof Date) ||
+      !(appointmentEnd instanceof Date)
+    ) {
       throw new Error(ErrorMessages.INVALID_DATE());
     }
 
-    const timeDifference = appointmentEnd.getTime() - appointmentStart.getTime();
+    return {verifiedAppointmentStart: appointmentStart, verifiedAppointmentEnd: appointmentEnd}
+  }
+
+  private verifyAppointmentDuration(
+    appointmentStart: Date,
+    appointmentEnd: Date
+  ) {
+    const timeDifference =
+      appointmentEnd.getTime() - appointmentStart.getTime();
     const minutesDifference = timeDifference / (1000 * 60);
 
     if (minutesDifference < AppointmentDuration.MIN_MINUTES) {

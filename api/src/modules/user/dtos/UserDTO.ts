@@ -3,4 +3,5 @@ export interface UserDTO {
   email: string,
   password: string
   role: string
+  dailyAppointments?: number
 }

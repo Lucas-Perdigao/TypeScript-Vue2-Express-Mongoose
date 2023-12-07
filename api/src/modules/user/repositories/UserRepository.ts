@@ -50,6 +50,26 @@ export class UserRepository implements IUserRepository {
     return updatedUser as UserType;
   }
 
+  async addAppointment(id: string): Promise<UserType>{
+    if(!isValidObjectId(id)){
+      throw new Error(ErrorMessages.ID_NOT_VALID(id))
+    }
+
+    const user = await this.getById(id)
+
+    if(!user){
+      throw new Error(ErrorMessages.NOT_FOUND("User"))
+    }
+
+    if(user && user.role != 'broker'){
+      throw new Error(ErrorMessages.ROLE_NOT_ALLOWED('client'))
+    }
+
+    const updatedUser = await this.userModel.findByIdAndUpdate(id, {$push: {dailyAppointments: 1}}, {new: true})
+    return updatedUser as UserType
+
+  }
+
   async softDelete(id: string): Promise<UserType> {
     if (!isValidObjectId(id)) {
       throw new Error(ErrorMessages.ID_NOT_VALID(id));
