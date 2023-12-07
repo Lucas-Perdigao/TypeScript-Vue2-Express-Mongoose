@@ -34,15 +34,13 @@ class MongoSeeder {
 
   static async seedUsers() {
     try {
-      const userClients = Array(5).fill(0).map((_, index) => {
-        seedIndex ++
-        return this.createUserClientSeed(seedIndex)
-      })
+      const userClients = []
+      const userBrokers = []
 
-      const userBrokers = Array(5).fill(0).map((_, index) => {
-        seedIndex ++
-        return this.createUserBrokerSeed(seedIndex)
-      })
+      for (let i = 0; i < 5; i++){
+        userClients.push(this.createUserClientSeed(seedIndex))
+        userBrokers.push(this.createUserBrokerSeed(seedIndex))
+      }
 
       const allUsers = userClients.concat(userBrokers)
       const promises = allUsers.map(userData => UserModel.create(userData))
