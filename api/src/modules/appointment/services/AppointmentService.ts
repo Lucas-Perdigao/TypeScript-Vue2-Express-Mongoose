@@ -6,11 +6,12 @@ import { IAppointmentService } from "./AppointmentServiceInterface";
 import { AppointmentType } from "../model/AppointmentModel";
 import { AppointmentDuration } from "../utils/appointmentDuration";
 import { IUserRepository } from "../../user/repositories/UserRepositoryInterface";
-import { MongooseUserType, UserType } from "../../user/model/UserModel";
-import { userConfig } from "../../user/utils/userConfig";
+import { MongooseUserType } from "../../user/model/UserModel";
 import { UpdateAppointmentDTO } from "../dtos/UpdateAppointmentDTO";
 import { IRoomRepository } from "../../room/repositories/RoomRepositoryInterface";
-import { RoomType } from "../../room/model/RoomModel";
+import { VerifiedEntitiesDTO } from "../dtos/VerifiedEntitiesDTO";
+import { MongooseRoomType } from "../../room/model/RoomModel";
+import { userConfig } from "../../user/utils/userConfig";
 
 export class AppointmentService implements IAppointmentService {
   constructor(
@@ -75,34 +76,16 @@ export class AppointmentService implements IAppointmentService {
   async create(appointment: CreateAppointmentDTO): Promise<AppointmentType> {
     const { appointmentStart, appointmentEnd, broker, client, room } = appointment;
 
-    const {verifiedAppointmentStart, verifiedAppointmentEnd} = this.verifyAndReturnDates(appointmentStart, appointmentEnd)
+    const start = new Date(appointmentStart)
+    const end = new Date(appointmentEnd)
 
-    this.verifyAppointmentDuration(verifiedAppointmentStart, verifiedAppointmentEnd);
+    this.verifyAppointmentDuration(start, end);
 
-    const appointmentRoom = await this.roomRepositoty.getById(room)
-    if(!appointmentRoom){
-      throw new Error(ErrorMessages.NOT_FOUND("Room"))
-    }
+    const {appointmentRoom, brokerUser} = await this.verifyAndReturnEntities(room, client, broker)
 
-    const clientUser = await this.userRepository.getById(client);
-    if (!clientUser || clientUser.role !== "client") {
-      throw new Error(ErrorMessages.NOT_FOUND("Client"));
-    }
+    await this.verifyBrokerIsAvailable(brokerUser, start, end);
 
-    const brokerUser = (await this.userRepository.getById(broker)) as MongooseUserType;
-    if (!brokerUser || brokerUser.role !== "broker") {
-      throw new Error(ErrorMessages.NOT_FOUND("Broker"));
-    }
-
-    if (brokerUser.dailyAppointments && brokerUser.dailyAppointments >= userConfig.MAX_DAILY_APPOINTMENTS) {
-      throw new Error(
-        ErrorMessages.MAX_NUMBER("daily appointments for this broker")
-      );
-    }
-
-    await this.verifyBrokerIsAvailable(brokerUser._id.toString(), appointmentStart, appointmentEnd);
-
-    await this.verifyRoomIsAvailable(appointmentRoom, appointmentStart, appointmentEnd)
+    await this.verifyRoomIsAvailable(appointmentRoom, start, end)
 
     const newAppointment = await this.appointmentRepository.create(appointment);
 
@@ -115,10 +98,7 @@ export class AppointmentService implements IAppointmentService {
     return newAppointment;
   }
 
-  async update(
-    id: string,
-    appointmentData: UpdateAppointmentDTO
-  ): Promise<AppointmentType> {
+  async update(id: string, appointmentData: UpdateAppointmentDTO): Promise<AppointmentType> {
     const user = await this.getById(id);
 
     if (!user) {
@@ -152,19 +132,16 @@ export class AppointmentService implements IAppointmentService {
     return deletedAppointment;
   }
 
-  private verifyRoomIsAvailable(appointmentRoom: RoomType, appointmentStart: Date, appointmentEnd: Date){
-    const { appointments } = appointmentRoom
+  private async verifyBrokerIsAvailable(broker: MongooseUserType, appointmentStart: Date, appointmentEnd: Date) {
+    if(broker.dailyAppointments >= userConfig.MAX_DAILY_APPOINTMENTS){
+      throw new Error(ErrorMessages.MAX_DAILY_MEETINGS('Broker'))
+    }
 
-
-  }
-
-  private async verifyBrokerIsAvailable(
-    brokerId: string,
-    appointmentStart: Date,
-    appointmentEnd: Date
-  ) {
+    const {_id} = broker
+    appointmentStart = new Date(appointmentStart)
+    appointmentEnd = new Date(appointmentEnd)
     const brokerAppointments = await this.appointmentRepository.getByUserId(
-      brokerId
+      _id.toString()
     );
 
     if (!brokerAppointments) {
@@ -176,37 +153,25 @@ export class AppointmentService implements IAppointmentService {
     );
 
     if (isOverlap) {
-      throw new Error(ErrorMessages.BROKER_BUSY(brokerId));
+      throw new Error(ErrorMessages.BROKER_BUSY(broker.name));
     }
   }
 
-  private isAppointmentOverlap(
-    appointment: AppointmentType,
-    start: Date,
-    end: Date
-  ): boolean {
+  private async verifyRoomIsAvailable(room: MongooseRoomType, appointmentStart: Date, appointmentEnd: Date){
+    const {_id} = room
+    const appointments = await this.appointmentRepository.getByRoomId(_id.toString())
+
+    const overlappedAppointmentExists = appointments.some(appointment => this.isAppointmentOverlap(appointment, appointmentStart, appointmentEnd))
+
+    if(overlappedAppointmentExists){
+      throw new Error(ErrorMessages.ROOM_OCCUPIED())
+    }
+  }
+
+  private isAppointmentOverlap(appointment: AppointmentType, start: Date, end: Date): boolean {
     return (
-      appointment.appointmentStart < end && appointment.appointmentEnd > start
+      appointment.appointmentStart <= end && appointment.appointmentEnd > start
     );
-  }
-
-  private verifyAndReturnDates(appointmentStart: Date, appointmentEnd: Date){
-    if (!(appointmentStart instanceof Date)) {
-      appointmentStart = new Date(appointmentStart);
-    }
-
-    if (!(appointmentEnd instanceof Date)) {
-      appointmentEnd = new Date(appointmentEnd);
-    }
-
-    if (
-      !(appointmentStart instanceof Date) ||
-      !(appointmentEnd instanceof Date)
-    ) {
-      throw new Error(ErrorMessages.INVALID_DATE());
-    }
-
-    return {verifiedAppointmentStart: appointmentStart, verifiedAppointmentEnd: appointmentEnd}
   }
 
   private verifyAppointmentDuration(
@@ -229,4 +194,32 @@ export class AppointmentService implements IAppointmentService {
       );
     }
   }
+
+  private async verifyAndReturnEntities(roomId: string, clientId: string, brokerId: string): Promise<VerifiedEntitiesDTO> {
+    const promises = [
+      this.roomRepositoty.getById(roomId),
+      this.userRepository.getById(clientId),
+      this.userRepository.getById(brokerId),
+    ];
+  
+    const [appointmentRoomResult, clientUserResult, brokerUserResult] = await Promise.allSettled(promises);
+  
+    if (appointmentRoomResult.status === 'rejected' || !appointmentRoomResult.value) {
+      throw new Error(ErrorMessages.NOT_FOUND("Room"));
+    }
+  
+    if (clientUserResult.status === 'rejected' || !clientUserResult.value) {
+      throw new Error(ErrorMessages.NOT_FOUND("Client"));
+    }
+  
+    if (brokerUserResult.status === 'rejected' || !brokerUserResult.value) {
+      throw new Error(ErrorMessages.NOT_FOUND("Broker"));
+    }
+  
+    const appointmentRoom = appointmentRoomResult.value;
+    const brokerUser = brokerUserResult.value
+  
+    return { appointmentRoom, brokerUser: brokerUser as MongooseUserType };
+  }
+  
 }

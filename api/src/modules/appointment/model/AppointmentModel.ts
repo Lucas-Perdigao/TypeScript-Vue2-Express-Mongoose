@@ -19,6 +19,11 @@ const appointmentSchema = new Schema({
     ref: "User",
     required: true
   },
+  room: {
+    type: Types.ObjectId,
+    ref: "Room",
+    required: true
+  },
   deletedAt: {
     type: Date,
     default: null

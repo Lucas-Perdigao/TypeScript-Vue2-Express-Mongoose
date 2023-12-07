@@ -6,10 +6,6 @@ const roomSchema = new Schema({
     required: true,
     unique: true
   },
-  appointments: [{
-    type: Types.ObjectId,
-    ref: "Appointment"
-  }],
   deletedAt: {
     type: Date,
     default: null
@@ -17,5 +13,11 @@ const roomSchema = new Schema({
 }, { timestamps: true})
 
 export type RoomType = InferSchemaType<typeof roomSchema>
+
+export type MongooseRoomType = RoomType & {
+  _id: Types.ObjectId | string
+  createdAt: Date,
+  updatedAt: Date
+}
 
 export const RoomModel: Model<RoomType> = model('Room', roomSchema)

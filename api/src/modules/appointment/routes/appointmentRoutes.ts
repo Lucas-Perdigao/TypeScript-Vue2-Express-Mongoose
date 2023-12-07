@@ -1,6 +1,5 @@
 import { Router } from 'express'
 import { appointmentModule } from '../factories/AppointmentFactory'
-import { AuthMiddleware } from '../../../middlewares/AuthMiddleware'
 
 export const appointmentRoutes = Router()
 

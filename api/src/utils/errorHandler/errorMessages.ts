@@ -50,4 +50,12 @@ export class ErrorMessages {
   static MAX_NUMBER(model: string){
     return `Maximum number of ${model} already achieved.`
   }
+
+  static ROOM_OCCUPIED(){
+    return `This room is already occupied during this timeframe.`
+  }
+
+  static MAX_DAILY_MEETINGS(model: string){
+    return `${model} has already reached the maximum amount of its daily appointments.`
+  }
 }

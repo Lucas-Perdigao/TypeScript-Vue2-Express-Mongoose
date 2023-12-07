@@ -1,9 +1,10 @@
-import { UserDTO } from "../dtos/UserDTO";
+import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import { ErrorMessages } from "../../../utils/errorHandler/errorMessages";
 import { IUserRepository } from "../repositories/UserRepositoryInterface";
 import { UserType } from "../model/UserModel";
 import { IUserService } from "./UserServiceInterface";
 import { Crypt } from "../../../utils/crypt/Crypt";
+import { UpdateUserDTO } from "../dtos/UpdateUserDTO";
 
 export class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -38,7 +39,7 @@ export class UserService implements IUserService {
     return user;
   }
 
-  async create(user: UserDTO): Promise<UserType | null> {
+  async create(user: CreateUserDTO): Promise<UserType | null> {
     user.password = await this.hashPassword(user.password);
     const newUser = await this.userRepository.create(user);
 
@@ -49,7 +50,7 @@ export class UserService implements IUserService {
     return newUser;
   }
 
-  async update(id: string, userData: UserDTO): Promise<UserType | null> {
+  async update(id: string, userData: UpdateUserDTO): Promise<UserType | null> {
     const user = await this.userRepository.getById(id);
 
     if (!user) {

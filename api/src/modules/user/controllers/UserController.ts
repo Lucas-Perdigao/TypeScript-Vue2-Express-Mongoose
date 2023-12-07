@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { IUserService } from "../services/UserServiceInterface";
-import { UserDTO } from "../dtos/UserDTO";
+import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import { StatusCode } from "../../../utils/statusCodes/StatusCode";
 import { userSchemaValidator } from "../utils/userSchemaValidator";
 import { IUserController } from "./UserControllerInterface";
+import { UpdateUserDTO } from "../dtos/UpdateUserDTO";
 
 export class UserController implements IUserController{
   constructor(private readonly userService: IUserService) {}
@@ -52,7 +53,7 @@ export class UserController implements IUserController{
 
   async create(req: Request, res: Response): Promise<void> {
     try {
-      const userData: UserDTO = req.body;
+      const userData: CreateUserDTO = req.body;
       await userSchemaValidator.validate(userData, { abortEarly: false });
       const newUser = await this.userService.create(userData);
       res
@@ -74,7 +75,7 @@ export class UserController implements IUserController{
   async update(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params
-      const userData: UserDTO = req.body;
+      const userData: UpdateUserDTO = req.body;
 
       const updatedUser = await this.userService.update(id, userData);
       res

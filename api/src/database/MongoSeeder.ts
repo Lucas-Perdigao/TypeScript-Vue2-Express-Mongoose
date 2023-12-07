@@ -34,7 +34,6 @@ class MongoSeeder {
 
   static async seedUsers() {
     try {
-      console.log('Creating users...')
       const userClients = Array(5).fill(0).map((_, index) => {
         seedIndex ++
         return this.createUserClientSeed(seedIndex)
@@ -63,7 +62,6 @@ class MongoSeeder {
 
   static async seedRooms(){
     try {
-      console.log('Creating rooms...')
       const rooms = Array(8).fill(0).map((_, index) => {
         return this.createRoomSeed(index)
       })

@@ -19,4 +19,5 @@ export const appointmentSchemaValidator = yup.object().shape({
     ),
   client: yup.string().required('Client is required'),
   broker: yup.string().required('Broker is required'),
+  room: yup.string().required('Room is required')
 });

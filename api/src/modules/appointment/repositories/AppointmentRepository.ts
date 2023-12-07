@@ -12,7 +12,8 @@ export class AppointmentRepository implements IAppointmentRepository {
     const appointments = this.appointmentModel
       .find({ deletedAt: null })
       .populate("client")
-      .populate("broker");
+      .populate("broker")
+      .populate("room")
     return appointments;
   }
 
@@ -27,7 +28,8 @@ export class AppointmentRepository implements IAppointmentRepository {
         deletedAt: null,
       })
       .populate("client")
-      .populate("broker");
+      .populate("broker")
+      .populate("room")
     return appointments;
   }
 
@@ -42,7 +44,9 @@ export class AppointmentRepository implements IAppointmentRepository {
         deletedAt: null,
       })
       .populate("client")
-      .populate("broker");
+      .populate("broker")
+      .populate("room")
+
     return appointment;
   }
 
@@ -57,7 +61,23 @@ export class AppointmentRepository implements IAppointmentRepository {
         deletedAt: null,
       })
       .populate("client")
-      .populate("broker");
+      .populate("broker")
+      .populate("room")
+    return appointments;
+  }
+
+  async getByRoomId(roomId: string): Promise<AppointmentType[]> {
+    if (!isValidObjectId(roomId)) {
+      throw new Error(ErrorMessages.ID_NOT_VALID(roomId));
+    }
+    const appointments = await this.appointmentModel
+      .find({
+        room: roomId,
+        deletedAt: null,
+      })
+      .populate("client")
+      .populate("broker")
+      .populate("room")
     return appointments;
   }
 
@@ -82,7 +102,8 @@ export class AppointmentRepository implements IAppointmentRepository {
     const updatedAppointment = await this.appointmentModel
       .findByIdAndUpdate(id, appointmentData, { new: true })
       .populate("client")
-      .populate("broker");
+      .populate("broker")
+      .populate("room")
     return updatedAppointment as AppointmentType;
   }
 
@@ -94,7 +115,8 @@ export class AppointmentRepository implements IAppointmentRepository {
     const deletedAppointment = await this.appointmentModel
       .findByIdAndUpdate(id, { deletedAt: new Date() }, { new: true })
       .populate("client")
-      .populate("broker");
+      .populate("broker")
+      .populate("room")
     return deletedAppointment as AppointmentType;
   }
 }

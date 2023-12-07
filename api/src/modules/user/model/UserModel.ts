@@ -24,7 +24,8 @@ const userSchema = new Schema({
   },
   dailyAppointments: {
     type: Number,
-    max: userConfig.MAX_DAILY_APPOINTMENTS
+    max: userConfig.MAX_DAILY_APPOINTMENTS,
+    default: 0
   },
   deletedAt: {
     type: Date,
@@ -39,7 +40,7 @@ export type UserType = InferSchemaType<typeof userSchema>
 export type MongooseUserType = UserType & {
   _id: Types.ObjectId | string
   createdAt: Date,
-  UpdatedAt: Date
+  updatedAt: Date
 }
 
 export const UserModel: Model<UserType> = model("User", userSchema)

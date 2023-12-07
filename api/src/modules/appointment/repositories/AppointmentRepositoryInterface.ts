@@ -1,12 +1,14 @@
 import { AppointmentType } from "../model/AppointmentModel";
-import { AppointmentDTO } from "../dtos/CreateAppointmentDTO";
+import { CreateAppointmentDTO } from "../dtos/CreateAppointmentDTO";
+import { UpdateAppointmentDTO } from "../dtos/UpdateAppointmentDTO";
 
 export interface IAppointmentRepository {
-  getAll(): Promise<AppointmentType[] | null>;
-  getByDates(appointmentStart: Date, appointmentEnd: Date): Promise<AppointmentType[] | null>;
+  getAll(): Promise<AppointmentType[]>;
+  getByDates(appointmentStart: Date, appointmentEnd: Date): Promise<AppointmentType[]>;
   getById(id: string): Promise<AppointmentType | null>
-  getByUserId(userId: string): Promise<AppointmentType[] | null>;
-  create(appointment: AppointmentDTO): Promise<AppointmentType | null>;
-  update(id: string, appointmentData: AppointmentDTO): Promise<AppointmentType | null>;
-  softDelete(id: string): Promise<AppointmentType | null>;
+  getByUserId(userId: string): Promise<AppointmentType[]>;
+  getByRoomId(roomId: string): Promise<AppointmentType[]>
+  create(appointment: CreateAppointmentDTO): Promise<AppointmentType>;
+  update(id: string, appointmentData: UpdateAppointmentDTO): Promise<AppointmentType>;
+  softDelete(id: string): Promise<AppointmentType>;
 }
