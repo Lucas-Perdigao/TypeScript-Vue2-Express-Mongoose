@@ -23,6 +23,6 @@ export class MongoConnection {
   }
 
   static finish() {
-    disconnect();
+    connection.close();
   }
 }
