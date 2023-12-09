@@ -39,6 +39,7 @@ export type UserType = InferSchemaType<typeof userSchema>
 
 export type MongooseUserType = UserType & {
   _id: Types.ObjectId | string
+  role: 'client' | 'broker'
   createdAt: Date,
   updatedAt: Date
 }

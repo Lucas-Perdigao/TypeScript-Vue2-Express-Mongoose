@@ -18,6 +18,7 @@ export class UserRepository implements IUserRepository {
     }
 
     const users = this.userModel.find({ ...filters, deletedAt: null })
+
     return users;
   }
 

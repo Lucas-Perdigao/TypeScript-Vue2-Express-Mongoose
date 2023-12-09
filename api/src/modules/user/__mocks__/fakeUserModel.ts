@@ -1,11 +1,13 @@
-import { Model } from 'mongoose'
-import { UserType } from '../model/UserModel'
-import { fakeUserData, fakeUpdatedUser, fakeDeletedUser } from './fakeUserData'
+import { fakeUser } from "./fakeUser";
+import { UserType } from "../model/UserModel";
+import { Model } from "mongoose";
 
-export const fakeUserModel  = {
-  find: () => jest.fn().mockResolvedValue(fakeUserData),
-  findOne: () => jest.fn().mockResolvedValue(fakeUserData[0]),
-  create: () => jest.fn().mockResolvedValue(fakeUserData[0]),
-  findByIdAndUpdate: () => jest.fn().mockResolvedValue(fakeUpdatedUser),
-  delete: () => jest.fn().mockResolvedValue(fakeDeletedUser)
-} as unknown as Model<UserType>
+export const fakeUserModel = {
+  find: jest
+    .fn()
+    .mockImplementation(() => Array.from({ length: 10 }, () => fakeUser)),
+  findById: jest.fn().mockImplementation(() => fakeUser),
+  findOne: jest.fn().mockImplementation(() => fakeUser),
+  create: jest.fn().mockImplementation(() => fakeUser),
+  findByIdAndUpdate: jest.fn().mockImplementation(() => fakeUser),
+} as unknown as Model<UserType>;

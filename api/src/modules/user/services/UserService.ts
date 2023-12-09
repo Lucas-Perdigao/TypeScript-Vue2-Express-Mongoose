@@ -10,7 +10,7 @@ import { UserQueryDTO } from "../dtos/UserQueryDTO";
 export class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async getAll(query: UserQueryDTO): Promise<UserType[] | null> {
+  async getAll(query: UserQueryDTO): Promise<UserType[]> {
     const users = await this.userRepository.getAll(query);
 
     if (!users || users.length === 0) {
@@ -20,7 +20,7 @@ export class UserService implements IUserService {
     return users;
   }
 
-  async getByEmail(email: string): Promise<UserType | null> {
+  async getByEmail(email: string): Promise<UserType> {
     const user = await this.userRepository.getByEmail(email);
 
     if (!user) {
@@ -30,7 +30,7 @@ export class UserService implements IUserService {
     return user;
   }
 
-  async getById(id: string): Promise<UserType | null> {
+  async getById(id: string): Promise<UserType> {
     const user = await this.userRepository.getById(id);
 
     if (!user) {
@@ -40,7 +40,7 @@ export class UserService implements IUserService {
     return user;
   }
 
-  async create(user: CreateUserDTO): Promise<UserType | null> {
+  async create(user: CreateUserDTO): Promise<UserType> {
     user.password = await this.hashPassword(user.password);
     const newUser = await this.userRepository.create(user);
 
@@ -51,7 +51,7 @@ export class UserService implements IUserService {
     return newUser;
   }
 
-  async update(id: string, userData: UpdateUserDTO): Promise<UserType | null> {
+  async update(id: string, userData: UpdateUserDTO): Promise<UserType> {
     const user = await this.userRepository.getById(id);
 
     if (!user) {
@@ -67,7 +67,7 @@ export class UserService implements IUserService {
     return updatedUser;
   }
 
-  async softDelete(id: string): Promise<UserType | null> {
+  async softDelete(id: string): Promise<UserType> {
     const user = await this.userRepository.getById(id);
 
     if (!user) {

@@ -12,6 +12,6 @@ export class CronMessages {
   }
 
   static error(cronName: string, error: any){
-    return `[ERROR] Error at cronjob ${cronName} at ${new Date().toLocaleString()}. Error Message: ${error}`
+    return `[ERROR] Error at cronjob ${cronName} at ${new Date().toLocaleString()}. ${error}`
   }
 }

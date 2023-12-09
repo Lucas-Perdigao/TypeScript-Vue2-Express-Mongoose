@@ -22,7 +22,7 @@ export class UserController implements IUserController{
     } catch (error: any) {
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
+        .json(error);
     }
   }
 
@@ -37,7 +37,7 @@ export class UserController implements IUserController{
     } catch (error: any) {
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
+        .json(error);
     }
   }
 
@@ -51,7 +51,7 @@ export class UserController implements IUserController{
     } catch (error: any) {
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
+        .json(error);
     }
   }
 
@@ -64,7 +64,7 @@ export class UserController implements IUserController{
         .status(StatusCode.CREATED)
         .json(newUser);
     } catch (error: any) {
-      if (error.name === "ValidationError") {
+      if (error.name && error.name === "ValidationError") {
         const errors = error.errors.map((err: string) => ({ message: err }));
         res.status(StatusCode.BAD_REQUEST).json({ errors });
         return
@@ -72,7 +72,7 @@ export class UserController implements IUserController{
 
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
+        .json(error);
     }
   }
 
@@ -88,7 +88,7 @@ export class UserController implements IUserController{
     } catch (error: any) {
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
+        .json(error);
     }
   }
 
@@ -102,7 +102,7 @@ export class UserController implements IUserController{
     } catch (error: any) {
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
+        .json(error);
     }
   }
 }

@@ -8,7 +8,6 @@ console.log(CronMessages.start('Reset Daily Appointments'))
 
 cron.schedule('0 0 * * *', async () => {
   try {
-    MongoConnection.initialize()
     console.log(CronMessages.executeStart('Reset Daily Appointments'))
     await UserModel.updateMany({role: 'broker'}, {dailyAppointments: 0})
     console.log(CronMessages.executeEnd('Reset Daily Appointments'))
