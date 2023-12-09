@@ -18,7 +18,7 @@ export class RoomController implements IRoomController {
       const rooms = await this.roomService.getAll(query as RoomQueryDTO)
       res.status(StatusCode.OK).json(rooms)
     } catch (error: any) {
-      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({error: error.message})
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json(error)
     }
   }
 
@@ -28,7 +28,7 @@ export class RoomController implements IRoomController {
       const room = await this.roomService.getById(id)
       res.status(StatusCode.OK).json(room)
     } catch (error: any) {
-      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({error: error.message})
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json(error)
     }
   }
 
@@ -45,7 +45,7 @@ export class RoomController implements IRoomController {
         return
       }
 
-      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({error: error.message})
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json(error)
     }
   }
 
@@ -57,7 +57,7 @@ export class RoomController implements IRoomController {
       const updatedroom = await this.roomService.update(id, roomData);
       res.status(StatusCode.OK).json(updatedroom);
     } catch (error: any) {
-      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({error: error.message})
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json(error)
     }
   }
 
@@ -69,7 +69,7 @@ export class RoomController implements IRoomController {
         .status(StatusCode.OK)
         .json(deletedRoom);
     } catch (error: any) {
-      res.status(StatusCode.INTERNAL_SERVER_ERROR).json({error: error.message})
+      res.status(StatusCode.INTERNAL_SERVER_ERROR).json(error)
     }
   }
 }

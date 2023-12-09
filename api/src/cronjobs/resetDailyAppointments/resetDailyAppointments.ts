@@ -1,5 +1,5 @@
 import cron from 'node-cron'
-import { CronMessages } from '../cronMessages';
+import { CronMessages } from '../utils/cronMessages';
 import { UserModel } from '../../modules/user/model/UserModel';
 import { MongoConnection } from '../../database/MongoConnect';
 

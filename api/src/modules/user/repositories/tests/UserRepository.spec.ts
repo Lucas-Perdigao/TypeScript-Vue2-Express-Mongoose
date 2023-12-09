@@ -1,4 +1,4 @@
-import { fakeObjectId } from "../../../../__mocks __/fakeObjectId";
+import { fakeInvalidObjectId, fakeObjectId } from "../../../../__mocks __/fakeObjectId";
 import { fakeUser } from "../../__mocks__/fakeUser";
 import { fakeUserModel } from "../../__mocks__/fakeUserModel";
 import { UserRepository } from "../UserRepository";
@@ -12,6 +12,12 @@ describe("UserRepository", () => {
 
       expect(users).toEqual(Array.from({ length: 10 }, () => fakeUser));
     });
+
+    it("should call the find method of the userModel", async () => {
+      await userRepository.getAll({});
+
+      expect(fakeUserModel.find).toHaveBeenCalled();
+    });
   });
 
   describe("getByEmail", () => {
@@ -19,6 +25,12 @@ describe("UserRepository", () => {
       const user = await userRepository.getByEmail(fakeUser.email);
 
       expect(user).toEqual(fakeUser);
+    });
+
+    it("should call the findOne method of the userModel", async () => {
+      await userRepository.getByEmail(fakeUser.email);
+
+      expect(fakeUserModel.findOne).toHaveBeenCalled();
     });
   });
 
@@ -28,6 +40,12 @@ describe("UserRepository", () => {
 
       expect(user).toEqual(fakeUser);
     });
+
+    it("should call the findOne method of the userModel", async () => {
+      await userRepository.getById(fakeObjectId);
+
+      expect(fakeUserModel.findOne).toHaveBeenCalled();
+    });
   });
 
   describe("create", () => {
@@ -35,6 +53,12 @@ describe("UserRepository", () => {
       const user = await userRepository.create(fakeUser);
 
       expect(user).toEqual(fakeUser);
+    });
+
+    it("should call the create method of the userModel", async () => {
+      await userRepository.create(fakeUser);
+
+      expect(fakeUserModel.create).toHaveBeenCalled();
     });
   });
 
@@ -44,11 +68,16 @@ describe("UserRepository", () => {
 
       expect(user).toEqual(fakeUser);
     });
-    it("should throw an error if the id is invalid", async () => {
-      const invalidId = "invalidId";
 
+    it("should call the findByIdAndUpdate method of the userModel", async () => {
+      await userRepository.update(fakeObjectId, fakeUser);
+
+      expect(fakeUserModel.findByIdAndUpdate).toHaveBeenCalled();
+    });
+
+    it("should throw an error if the id is invalid", async () => {
       await expect(
-        userRepository.update(invalidId, fakeUser)
+        userRepository.update(fakeInvalidObjectId, fakeUser)
       ).rejects.toThrow();
     });
   });
@@ -59,6 +88,16 @@ describe("UserRepository", () => {
 
       expect(user).toEqual(fakeUser);
     });
+
+    it("should call the findByIdAndUpdate method of the userModel", async () => {
+      await userRepository.addAppointment(fakeObjectId);
+
+      expect(fakeUserModel.findByIdAndUpdate).toHaveBeenCalled();
+    });
+
+    it("should throw an error if the id is invalid", async () => {
+      await expect(userRepository.addAppointment(fakeInvalidObjectId)).rejects.toThrow();
+    });
   });
 
   describe("softDelete", () => {
@@ -67,15 +106,15 @@ describe("UserRepository", () => {
 
       expect(user).toEqual(fakeUser);
     });
-    it("should call, the findByIdAndUpdate method of the userModel", async () => {
+    
+    it("should call the findByIdAndUpdate method of the userModel", async () => {
       await userRepository.softDelete(fakeObjectId);
 
       expect(fakeUserModel.findByIdAndUpdate).toHaveBeenCalled();
     });
-    it("should throw an error if the id is invalid", async () => {
-      const invalidId = "invalidId";
 
-      await expect(userRepository.softDelete(invalidId)).rejects.toThrow();
+    it("should throw an error if the id is invalid", async () => {
+      await expect(userRepository.softDelete(fakeInvalidObjectId)).rejects.toThrow();
     });
   });
 });

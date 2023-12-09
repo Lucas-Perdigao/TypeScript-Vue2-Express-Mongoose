@@ -4,9 +4,9 @@ import { UpdateRoomDTO } from "../dtos/UpdateRoomDTO";
 import { RoomQueryDTO } from "../dtos/RoomQueryDTO";
 
 export interface IRoomRepository {
-  getAll(query: RoomQueryDTO): Promise<RoomType[]>;
-  getById(id: string): Promise<MongooseRoomType>;
-  create(room: CreateRoomDTO): Promise<RoomType>;
-  update(id: string, roomData: UpdateRoomDTO): Promise<RoomType>;
-  softDelete(id: string): Promise<MongooseRoomType>;
+  getAll(query: RoomQueryDTO): Promise<RoomType[] | null>;
+  getById(id: string): Promise<MongooseRoomType | null>;
+  create(room: CreateRoomDTO): Promise<RoomType> | null;
+  update(id: string, roomData: UpdateRoomDTO): Promise<RoomType | null>;
+  softDelete(id: string): Promise<MongooseRoomType | null>;
 }

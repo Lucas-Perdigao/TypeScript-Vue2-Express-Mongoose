@@ -1,7 +1,7 @@
 import { fakeUser } from "../../__mocks__/fakeUser";
 import { fakeUserService } from "../../__mocks__/fakeUserService";
 import { UserController } from "../UserController";
-import { mockRequest, mockInvalidRequest, mockResponse } from "../../__mocks__/fakeRequestResponse";
+import { mockRequest, mockResponse } from "../../../../__mocks __/fakeRequestResponse";
 import { StatusCode } from "../../../../utils/statusCodes/StatusCode";
 
 const userController = new UserController(fakeUserService)

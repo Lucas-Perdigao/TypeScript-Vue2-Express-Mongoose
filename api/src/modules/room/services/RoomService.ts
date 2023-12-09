@@ -33,7 +33,7 @@ export class RoomService implements IRoomService{
 
   async create(room: CreateRoomDTO): Promise<RoomType> {
     const allRooms = await this.roomRepository.getAll({})
-    if(allRooms.length >= roomConfig.MAX_ROOMS){
+    if(allRooms && allRooms.length >= roomConfig.MAX_ROOMS){
       throw new Error(ErrorMessages.MAX_NUMBER('rooms'))
     }
     
