@@ -4,12 +4,20 @@ import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import { IUserRepository } from "./UserRepositoryInterface";
 import { ErrorMessages } from "../../../utils/errorHandler/errorMessages";
 import { UpdateUserDTO } from "../dtos/UpdateUserDTO";
+import { UserQueryDTO } from "../dtos/UserQueryDTO";
 
 export class UserRepository implements IUserRepository {
   constructor(private readonly userModel: Model<UserType>) {}
 
-  async getAll(): Promise<UserType[] | null> {
-    const users = this.userModel.find({ deletedAt: null })
+  async getAll(query: UserQueryDTO): Promise<UserType[] | null> {
+    const {page, limit, ...filters} = query
+
+    if(page && limit){
+      const users = this.userModel.find({ ...filters, deletedAt: null }).sort({ createdAt: 1 }).skip((page - 1) * limit).limit(limit);
+      return users;
+    }
+
+    const users = this.userModel.find({ ...filters, deletedAt: null })
     return users;
   }
 

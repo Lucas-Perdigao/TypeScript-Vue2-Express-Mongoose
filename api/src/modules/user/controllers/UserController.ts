@@ -5,13 +5,17 @@ import { StatusCode } from "../../../utils/statusCodes/StatusCode";
 import { userSchemaValidator } from "../utils/userSchemaValidator";
 import { IUserController } from "./UserControllerInterface";
 import { UpdateUserDTO } from "../dtos/UpdateUserDTO";
+import { UserQueryDTO } from "../dtos/UserQueryDTO";
+import { removeUndefinedParams } from '../../../utils/removeUndefinedParams/removeUndefinedParams'
 
 export class UserController implements IUserController{
   constructor(private readonly userService: IUserService) {}
 
   async getAll(req: Request, res: Response): Promise<void> {
     try {
-      const users = await this.userService.getAll();
+      const { page, limit, name, email, role, dailyAppointments } = req.query;
+      const query = removeUndefinedParams({page, limit, name, email, role, dailyAppointments})
+      const users = await this.userService.getAll(query as UserQueryDTO);
       res
         .status(StatusCode.OK)
         .json(users);

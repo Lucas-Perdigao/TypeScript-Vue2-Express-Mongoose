@@ -1,9 +1,10 @@
 import { MongooseUserType, UserType } from "../model/UserModel";
 import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import { UpdateUserDTO } from "../dtos/UpdateUserDTO";
+import { UserQueryDTO } from "../dtos/UserQueryDTO";
 
 export interface IUserRepository {
-  getAll(): Promise<UserType[] | null>;
+  getAll(query: UserQueryDTO): Promise<UserType[] | null>;
   getByEmail(email: string): Promise<UserType | null>;
   getById(id: string): Promise<MongooseUserType | null>;
   create(user: CreateUserDTO): Promise<UserType | null>;

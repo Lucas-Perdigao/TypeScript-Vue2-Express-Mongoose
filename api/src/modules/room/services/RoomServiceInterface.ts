@@ -1,10 +1,12 @@
 import { RoomType } from "../model/RoomModel";
-import { RoomDTO } from "../dtos/CreateRoomDTO";
+import { CreateRoomDTO } from "../dtos/CreateRoomDTO";
+import { UpdateRoomDTO } from "../dtos/UpdateRoomDTO";
+import { RoomQueryDTO } from "../dtos/RoomQueryDTO";
 
 export interface IRoomService {
-  getAll(): Promise<RoomType[]>;
+  getAll(query: RoomQueryDTO): Promise<RoomType[]>;
   getById(id: string): Promise<RoomType>;
-  create(room: RoomDTO): Promise<RoomType>;
-  update(id: string, roomData: RoomDTO): Promise<RoomType>;
+  create(room: CreateRoomDTO): Promise<RoomType>;
+  update(id: string, roomData: UpdateRoomDTO): Promise<RoomType>;
   softDelete(id: string): Promise<RoomType>;
 }

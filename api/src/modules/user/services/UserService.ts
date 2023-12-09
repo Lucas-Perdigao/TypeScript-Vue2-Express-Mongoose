@@ -5,14 +5,15 @@ import { UserType } from "../model/UserModel";
 import { IUserService } from "./UserServiceInterface";
 import { Crypt } from "../../../utils/crypt/Crypt";
 import { UpdateUserDTO } from "../dtos/UpdateUserDTO";
+import { UserQueryDTO } from "../dtos/UserQueryDTO";
 
 export class UserService implements IUserService {
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async getAll(): Promise<UserType[] | null> {
-    const users = await this.userRepository.getAll();
+  async getAll(query: UserQueryDTO): Promise<UserType[] | null> {
+    const users = await this.userRepository.getAll(query);
 
-    if (!users) {
+    if (!users || users.length === 0) {
       throw new Error(ErrorMessages.NOT_FOUND("Users"));
     }
 

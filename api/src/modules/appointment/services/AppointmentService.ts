@@ -12,6 +12,7 @@ import { IRoomRepository } from "../../room/repositories/RoomRepositoryInterface
 import { VerifiedEntitiesDTO } from "../dtos/VerifiedEntitiesDTO";
 import { MongooseRoomType } from "../../room/model/RoomModel";
 import { userConfig } from "../../user/utils/userConfig";
+import { AppointmentQueryDTO } from "../dtos/AppointmentQueryDTO";
 
 export class AppointmentService implements IAppointmentService {
   constructor(
@@ -20,8 +21,8 @@ export class AppointmentService implements IAppointmentService {
     private readonly roomRepositoty: IRoomRepository
   ) {}
 
-  async getAll(): Promise<AppointmentType[]> {
-    const appointments = await this.appointmentRepository.getAll()
+  async getAll(query: AppointmentQueryDTO): Promise<AppointmentType[]> {
+    const appointments = await this.appointmentRepository.getAll(query)
 
     if (!appointments) {
       throw new Error(ErrorMessages.NOT_FOUND("Appointments"));

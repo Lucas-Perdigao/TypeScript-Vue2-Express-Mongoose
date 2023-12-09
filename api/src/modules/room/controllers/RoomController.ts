@@ -4,13 +4,18 @@ import { IRoomService } from "../services/RoomServiceInterface";
 import { Request, Response } from 'express'
 import { roomSchemaValidator } from "../utils/roomSchemaValidator";
 import { UpdateRoomDTO } from "../dtos/UpdateRoomDTO";
+import { removeUndefinedParams } from "../../../utils/removeUndefinedParams/removeUndefinedParams";
+import { RoomQueryDTO } from "../dtos/RoomQueryDTO";
+import { IRoomController } from "./RoomControllerInterface";
 
-export class RoomController {
+export class RoomController implements IRoomController {
   constructor(private readonly roomService: IRoomService){}
 
   async getAll(req: Request, res: Response){
     try {
-      const rooms = await this.roomService.getAll()
+      const { page, limit, name } = req.query;
+      const query = removeUndefinedParams({page, limit, name})
+      const rooms = await this.roomService.getAll(query as RoomQueryDTO)
       res.status(StatusCode.OK).json(rooms)
     } catch (error: any) {
       res.status(StatusCode.INTERNAL_SERVER_ERROR).json({error: error.message})

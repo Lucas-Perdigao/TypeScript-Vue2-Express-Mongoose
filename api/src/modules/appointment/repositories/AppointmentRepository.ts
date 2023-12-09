@@ -4,13 +4,29 @@ import { Model, isValidObjectId } from "mongoose";
 import { CreateAppointmentDTO } from "../dtos/CreateAppointmentDTO";
 import { IAppointmentRepository } from "./AppointmentRepositoryInterface";
 import { UpdateAppointmentDTO } from "../dtos/UpdateAppointmentDTO";
+import { AppointmentQueryDTO } from "../dtos/AppointmentQueryDTO";
 
 export class AppointmentRepository implements IAppointmentRepository {
   constructor(private readonly appointmentModel: Model<AppointmentType>) {}
 
-  async getAll(): Promise<AppointmentType[]> {
+  async getAll(query: AppointmentQueryDTO): Promise<AppointmentType[]> {
+    const {page, limit, ...filters} = query
+
+    if(page && limit){
+      const appointments = this.appointmentModel
+      .find({...filters, deletedAt: null})
+      .populate("client")
+      .populate("broker")
+      .populate("room")
+      .sort({ createdAt: 1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+      return appointments
+    }
+
     const appointments = this.appointmentModel
-      .find({ deletedAt: null })
+      .find({...filters, deletedAt: null})
       .populate("client")
       .populate("broker")
       .populate("room")

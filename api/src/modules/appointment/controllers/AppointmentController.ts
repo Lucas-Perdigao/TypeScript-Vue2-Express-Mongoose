@@ -8,13 +8,16 @@ import { IAppointmentController } from "./AppointmentControllerInterface";
 import jwt, { JwtPayload } from 'jsonwebtoken'
 import { ErrorMessages } from "../../../utils/errorHandler/errorMessages";
 import { UpdateAppointmentDTO } from "../dtos/UpdateAppointmentDTO";
+import { removeUndefinedParams } from "../../../utils/removeUndefinedParams/removeUndefinedParams";
 
 export class AppointmentController implements IAppointmentController{
   constructor(private readonly appointmentService: IAppointmentService) {}
 
   async getAll(req: Request, res: Response) {
     try {
-      const appointments = await this.appointmentService.getAll();
+      const { page, limit, appointmentStart, appointmentEnd, client, broker, room } = req.query;
+      const query = removeUndefinedParams({page, limit, appointmentStart, appointmentEnd, client, broker, room})
+      const appointments = await this.appointmentService.getAll(query);
       res
         .status(StatusCode.OK)
         .json(appointments);

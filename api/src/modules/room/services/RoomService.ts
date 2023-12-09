@@ -6,14 +6,15 @@ import { CreateRoomDTO } from "../dtos/CreateRoomDTO";
 import { IRoomService } from "./RoomServiceInterface";
 import { roomConfig } from "../utils/roomConfig";
 import { UpdateRoomDTO } from "../dtos/UpdateRoomDTO";
+import { RoomQueryDTO } from "../dtos/RoomQueryDTO";
 
 export class RoomService implements IRoomService{
   constructor(private readonly roomRepository: IRoomRepository){}
 
-  async getAll(): Promise<RoomType[]>{
-    const rooms = await this.roomRepository.getAll()
+  async getAll(query: RoomQueryDTO): Promise<RoomType[]>{
+    const rooms = await this.roomRepository.getAll(query)
     
-    if(!rooms){
+    if(!rooms || rooms.length === 0){
       throw new Error(ErrorMessages.NOT_FOUND('Rooms'))
     }
 
@@ -31,7 +32,7 @@ export class RoomService implements IRoomService{
   }
 
   async create(room: CreateRoomDTO): Promise<RoomType> {
-    const allRooms = await this.roomRepository.getAll()
+    const allRooms = await this.roomRepository.getAll({})
     if(allRooms.length >= roomConfig.MAX_ROOMS){
       throw new Error(ErrorMessages.MAX_NUMBER('rooms'))
     }
@@ -61,7 +62,7 @@ export class RoomService implements IRoomService{
     return updatedRoom
   }
 
-  async softDelete(id: string){
+  async softDelete(id: string): Promise<RoomType>{
     const room = await this.roomRepository.getById(id)
 
     if(!room){

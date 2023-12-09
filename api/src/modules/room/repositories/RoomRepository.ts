@@ -4,12 +4,20 @@ import { Model, isValidObjectId } from "mongoose";
 import { CreateRoomDTO } from "../dtos/CreateRoomDTO";
 import { IRoomRepository } from "./RoomRepositoryInterface";
 import { UpdateRoomDTO } from "../dtos/UpdateRoomDTO";
+import { RoomQueryDTO } from "../dtos/RoomQueryDTO";
 
 export class RoomRepository implements IRoomRepository {
   constructor(private readonly roomModel: Model<RoomType>) {}
 
-  async getAll(): Promise<RoomType[]> {
-    const rooms = this.roomModel.find({ deletedAt: null })
+  async getAll(query: RoomQueryDTO): Promise<RoomType[]> {
+    const {page, limit, ...filters} = query
+    
+    if(page && limit){
+      const rooms = this.roomModel.find({ ...filters, deletedAt: null }).sort({ createdAt: 1 }).skip((page - 1) * limit).limit(limit);
+      return rooms;
+    }
+
+    const rooms = this.roomModel.find({...filters, deletedAt: null})
     return rooms;
   }
 

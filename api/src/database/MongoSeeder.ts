@@ -17,7 +17,7 @@ class MongoSeeder {
   }
 
   static createUserBrokerSeed(index: number){
-    faker.seed(index++)
+    faker.seed(index)
     return {
       name: faker.person.fullName(),
       email: faker.internet.email(),
@@ -38,7 +38,9 @@ class MongoSeeder {
       const userBrokers = []
 
       for (let i = 0; i < 5; i++){
+        seedIndex++
         userClients.push(this.createUserClientSeed(seedIndex))
+        seedIndex++
         userBrokers.push(this.createUserBrokerSeed(seedIndex))
       }
 

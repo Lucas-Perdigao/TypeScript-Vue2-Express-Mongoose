@@ -1,3 +1,3 @@
 export const userConfig = {
-  MAX_DAILY_APPOINTMENTS: 5
+  MAX_DAILY_APPOINTMENTS: 5,
 }
