@@ -24,7 +24,7 @@ export class AppointmentService implements IAppointmentService {
   async getAll(query: AppointmentQueryDTO): Promise<AppointmentType[]> {
     const appointments = await this.appointmentRepository.getAll(query)
 
-    if (!appointments) {
+    if (!appointments || appointments.length === 0) {
       throw new Error(ErrorMessages.NOT_FOUND("Appointments"));
     }
     return appointments;
@@ -39,7 +39,7 @@ export class AppointmentService implements IAppointmentService {
       appointmentEnd
     );
 
-    if (!appointments) {
+    if (!appointments || appointments.length === 0) {
       throw new Error(ErrorMessages.NOT_FOUND("Appointments"));
     }
 
@@ -67,7 +67,7 @@ export class AppointmentService implements IAppointmentService {
 
     const appointments = await this.appointmentRepository.getByUserId(userId);
 
-    if (!appointments) {
+    if (!appointments || appointments.length === 0) {
       throw new Error(ErrorMessages.NOT_FOUND("Appointments"));
     }
 
@@ -133,7 +133,7 @@ export class AppointmentService implements IAppointmentService {
     return deletedAppointment;
   }
 
-  private async verifyBrokerIsAvailable(broker: MongooseUserType, appointmentStart: Date, appointmentEnd: Date) {
+  private async verifyBrokerIsAvailable(broker: MongooseUserType, appointmentStart: Date, appointmentEnd: Date): Promise<void> {
     if(broker.dailyAppointments >= userConfig.MAX_DAILY_APPOINTMENTS){
       throw new Error(ErrorMessages.MAX_DAILY_MEETINGS('Broker'))
     }

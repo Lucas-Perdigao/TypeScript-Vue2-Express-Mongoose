@@ -24,7 +24,7 @@ export class AppointmentController implements IAppointmentController{
     } catch (error: any) {
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
+        .json(error);
     }
   }
 
@@ -50,7 +50,7 @@ export class AppointmentController implements IAppointmentController{
 
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
+        .json(error);
     }
   }
 
@@ -64,7 +64,7 @@ export class AppointmentController implements IAppointmentController{
     } catch (error: any) {
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
+        .json(error);
     }
   }
 
@@ -76,7 +76,7 @@ export class AppointmentController implements IAppointmentController{
     } catch (error: any) {
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
+        .json(error);
     }
   }
 
@@ -114,7 +114,7 @@ export class AppointmentController implements IAppointmentController{
 
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
+        .json(error);
     }
   }
 
@@ -133,7 +133,7 @@ export class AppointmentController implements IAppointmentController{
     } catch (error: any) {
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
+        .json(error);
     }
   }
 
@@ -147,7 +147,7 @@ export class AppointmentController implements IAppointmentController{
     } catch (error: any) {
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json({ error: error.message });
+        .json(error);
     }
   }
 }

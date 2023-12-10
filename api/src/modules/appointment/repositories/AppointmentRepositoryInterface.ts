@@ -9,7 +9,7 @@ export interface IAppointmentRepository {
   getById(id: string): Promise<AppointmentType | null>
   getByUserId(userId: string): Promise<AppointmentType[]>;
   getByRoomId(roomId: string): Promise<AppointmentType[]>
-  create(appointment: CreateAppointmentDTO): Promise<AppointmentType>;
-  update(id: string, appointmentData: UpdateAppointmentDTO): Promise<AppointmentType>;
-  softDelete(id: string): Promise<AppointmentType>;
+  create(appointment: CreateAppointmentDTO): Promise<AppointmentType  | null>;
+  update(id: string, appointmentData: UpdateAppointmentDTO): Promise<AppointmentType  | null>;
+  softDelete(id: string): Promise<AppointmentType  | null>;
 }

@@ -1,6 +1,6 @@
 export interface CreateAppointmentDTO {
-  appointmentStart: Date,
-  appointmentEnd: Date,
+  appointmentStart: Date | string,
+  appointmentEnd: Date | string,
   client: string,
   broker: string,
   room: string
