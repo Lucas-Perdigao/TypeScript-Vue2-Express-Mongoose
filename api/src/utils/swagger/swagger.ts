@@ -9,7 +9,7 @@ const swaggerOptions = {
       description: "Sistema para agendamento entre clientes e corretores da Bem Protege.",
     },
   },
-  apis: ["./src/routes/*.ts"],
+  apis: ["./src/modules/**/routes/*.ts"],
 };
 
 export const swaggerSpecs = swaggerJsdoc(swaggerOptions);

@@ -7,6 +7,7 @@ import { IUserController } from "./UserControllerInterface";
 import { UpdateUserDTO } from "../dtos/UpdateUserDTO";
 import { UserQueryDTO } from "../dtos/UserQueryDTO";
 import { removeUndefinedParams } from '../../../utils/removeUndefinedParams/removeUndefinedParams'
+import { ErrorMessages } from "../../../utils/errorHandler/errorMessages";
 
 export class UserController implements IUserController{
   constructor(private readonly userService: IUserService) {}
@@ -16,13 +17,14 @@ export class UserController implements IUserController{
       const { page, limit, name, email, role, dailyAppointments } = req.query;
       const query = removeUndefinedParams({page, limit, name, email, role, dailyAppointments})
       const users = await this.userService.getAll(query as UserQueryDTO);
+
       res
         .status(StatusCode.OK)
         .json(users);
     } catch (error: any) {
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json(error);
+        .json(error.message);
     }
   }
 
@@ -37,7 +39,7 @@ export class UserController implements IUserController{
     } catch (error: any) {
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json(error);
+        .json(error.message);
     }
   }
 
@@ -51,7 +53,7 @@ export class UserController implements IUserController{
     } catch (error: any) {
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json(error);
+        .json(error.message);
     }
   }
 
@@ -72,7 +74,7 @@ export class UserController implements IUserController{
 
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json(error);
+        .json(error.message);
     }
   }
 
@@ -88,7 +90,7 @@ export class UserController implements IUserController{
     } catch (error: any) {
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json(error);
+        .json(error.message);
     }
   }
 
@@ -102,7 +104,7 @@ export class UserController implements IUserController{
     } catch (error: any) {
       res
         .status(StatusCode.INTERNAL_SERVER_ERROR)
-        .json(error);
+        .json(error.message);
     }
   }
 }

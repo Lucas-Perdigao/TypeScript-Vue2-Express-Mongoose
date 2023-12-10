@@ -3,6 +3,7 @@ import { fakeUserService } from "../../__mocks__/fakeUserService";
 import { UserController } from "../UserController";
 import { mockRequest, mockResponse } from "../../../../__mocks __/fakeRequestResponse";
 import { StatusCode } from "../../../../utils/statusCodes/StatusCode";
+import { ErrorMessages } from "../../../../utils/errorHandler/errorMessages";
 
 const userController = new UserController(fakeUserService)
 const req = mockRequest()
@@ -27,7 +28,7 @@ describe("UserController", () => {
     })
 
     it("should return a status code 500", async () => {
-      jest.spyOn(fakeUserService, "getAll").mockImplementationOnce(() => Promise.reject(null))
+      jest.spyOn(fakeUserService, "getAll").mockImplementationOnce(() => Promise.reject(ErrorMessages.NOT_FOUND('Users')))
       await userController.getAll(req, res)
       expect(res.status).toHaveBeenCalledWith(StatusCode.INTERNAL_SERVER_ERROR)
     })
@@ -46,7 +47,7 @@ describe("UserController", () => {
     })
 
     it("should return a status code 500", async () => {
-      jest.spyOn(fakeUserService, "getByEmail").mockImplementationOnce(() => Promise.reject(null))
+      jest.spyOn(fakeUserService, "getByEmail").mockImplementationOnce(() => Promise.reject(ErrorMessages.NOT_FOUND('User')))
       await userController.getByEmail(req, res)
       expect(res.status).toHaveBeenCalledWith(StatusCode.INTERNAL_SERVER_ERROR)
     })
@@ -65,7 +66,7 @@ describe("UserController", () => {
     })
 
     it("should return a status code 500", async () => {
-      jest.spyOn(fakeUserService, "getById").mockImplementationOnce(() => Promise.reject(null))
+      jest.spyOn(fakeUserService, "getById").mockImplementationOnce(() => Promise.reject(ErrorMessages.NOT_FOUND('User')))
       await userController.getById(req, res)
       expect(res.status).toHaveBeenCalledWith(StatusCode.INTERNAL_SERVER_ERROR)
     })
@@ -90,7 +91,7 @@ describe("UserController", () => {
     })
 
     it("should return a status code 500", async () => {
-      jest.spyOn(fakeUserService, "create").mockImplementationOnce(() => Promise.reject({}))
+      jest.spyOn(fakeUserService, "create").mockImplementationOnce(() => Promise.reject(ErrorMessages.CANNOT_CREATE('User')))
       await userController.create(req, res)
       expect(res.status).toHaveBeenCalledWith(StatusCode.INTERNAL_SERVER_ERROR)
     })
@@ -110,7 +111,7 @@ describe("UserController", () => {
     })
 
     it("should return a status code 500", async () => {
-      jest.spyOn(fakeUserService, "update").mockImplementationOnce(() => Promise.reject(null))
+      jest.spyOn(fakeUserService, "update").mockImplementationOnce(() => Promise.reject(ErrorMessages.CANNOT_UPDATE('User')))
       await userController.update(req, res)
       expect(res.status).toHaveBeenCalledWith(StatusCode.INTERNAL_SERVER_ERROR)
     })
@@ -129,7 +130,7 @@ describe("UserController", () => {
     })
 
     it("should return a status code 500", async () => {
-      jest.spyOn(fakeUserService, "softDelete").mockImplementationOnce(() => Promise.reject(null))
+      jest.spyOn(fakeUserService, "softDelete").mockImplementationOnce(() => Promise.reject(ErrorMessages.CANNOT_DELETE('User')))
       await userController.softDelete(req, res)
       expect(res.status).toHaveBeenCalledWith(StatusCode.INTERNAL_SERVER_ERROR)
     })
