@@ -6,6 +6,7 @@ export const mockRequest = () => {
     req.body = jest.fn().mockReturnValue(req) as unknown as Request["body"]
     req.params = jest.fn().mockReturnValue(req) as unknown as Request["params"]
     req.query = jest.fn().mockReturnValue(req) as unknown as Request["query"]
+    req.headers = jest.fn().mockReturnValue(req) as unknown as Request["headers"]
     return req
 }
 
@@ -14,6 +15,7 @@ export const mockInvalidRequest = () => {
     req.body = jest.fn().mockReturnValue({...req, body: {error: "error"}}) as unknown as Request["body"]
     req.params = jest.fn().mockReturnValue(req) as unknown as Request["params"]
     req.query = jest.fn().mockReturnValue(req) as unknown as Request["query"]
+    req.headers = jest.fn().mockReturnValue(req) as unknown as Request["headers"]
     return req
 }
 

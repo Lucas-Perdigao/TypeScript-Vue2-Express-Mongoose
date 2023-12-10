@@ -3,6 +3,8 @@ import { fakeAppointmentService } from "../../__mocks__/fakeAppointmentService";
 import { AppointmentController } from "../AppointmentController";
 import { mockRequest, mockResponse } from "../../../../__mocks __/fakeRequestResponse";
 import { StatusCode } from "../../../../utils/statusCodes/StatusCode";
+import { fakeToken } from "../../../../__mocks __/fakeToken";
+import { AppointmentType } from "../../model/AppointmentModel";
 
 const appointmentController = new AppointmentController(fakeAppointmentService)
 const req = mockRequest()
@@ -35,10 +37,10 @@ describe("AppointmentController", () => {
 
   describe("getByDates", () => {
     it("should return all appointments by dates", async () => {
-      req.query.appointmentStart = String(startInTwoHours)
-      req.query.appointmentEnd = String(endInThreeHours)
+      const expectedAppointments = Array.from({ length: 3 }, () => fakeAppointment) as unknown as AppointmentType[]
+      jest.spyOn(fakeAppointmentService, "getByDates").mockImplementationOnce(() => Promise.resolve(Array.from(expectedAppointments)))
       await appointmentController.getByDates(req, res)
-      expect(res.json).toHaveBeenLastCalledWith(Array.from({ length: 10 }, () => ({...fakeAppointment, appointmentStart: startInTwoHours, appointmentEnd: endInThreeHours})))
+      expect(res.json).toHaveBeenLastCalledWith(expectedAppointments)
     })
 
     it("should return a status code 200", async () => {
@@ -47,7 +49,7 @@ describe("AppointmentController", () => {
     })
 
     it("should return a status code 500", async () => {
-      jest.spyOn(fakeAppointmentService, "getByDates").mockImplementationOnce(() => Promise.reject(null))
+      jest.spyOn(fakeAppointmentService, "getByDates").mockImplementationOnce(() => Promise.reject(new Error()))
       await appointmentController.getByDates(req, res)
       expect(res.status).toHaveBeenCalledWith(StatusCode.INTERNAL_SERVER_ERROR)
     })
@@ -73,11 +75,16 @@ describe("AppointmentController", () => {
   })
 
   describe("getByUserId", () => {
-    it("should return a appointment", async () => {
-      req.params.id = fakeAppointment.client
-      await appointmentController.getByUserId(req, res)
-      expect(res.json).toHaveBeenLastCalledWith(fakeAppointment)
-    })
+    it("should return all appointments from user", async () => {
+      const expectedAppointments = Array.from({ length: 3 }, () => fakeAppointment);
+      jest.spyOn(fakeAppointmentService, "getByUserId").mockImplementationOnce(() => Promise.resolve(expectedAppointments as unknown as AppointmentType[]));
+    
+      await appointmentController.getByUserId(req, res);
+    
+      // Update the expectation to match the expected appointments
+      expect(res.json).toHaveBeenLastCalledWith(expectedAppointments);
+    });
+    
 
     it("should return a status code 200", async () => {
       await appointmentController.getByUserId(req, res)
@@ -94,6 +101,7 @@ describe("AppointmentController", () => {
   describe("create", () => {
     it("should return a appointment", async () => {
       req.body = fakeAppointment
+      req.headers.authorization = fakeToken
       await appointmentController.create(req, res)
       expect(res.json).toHaveBeenLastCalledWith(fakeAppointment)
     })

@@ -21,5 +21,3 @@ cron.schedule('* * * * *', async () => {
     console.error(CronMessages.error('Clear Expired Appointments', error));
   }
 });
-
-//npx ts-node src/cronjobs/clearExpiredAppointments/clearExpiredAppointments.ts 
