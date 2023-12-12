@@ -97,6 +97,7 @@ Siga os passos abaixo para instalar, configurar e executar a aplicação localme
 - Somente a rota de login e a de criação de usuários são abertas (ver documentação dos endpoints do Swagger);
 - É necessário rodar os dois cronjobs para que a aplicação cumpra seus requisitos;
 - As rotas de GET possuem paginação e filtragem (ver documentação dos endpoints do Swagger).
+- Coisas que gostaria de fazer mas não tive tempo: criar o seeder das reuniões, regex nas queries de busca, 100% de cobertura de teste, um error handler mais robusto, testes de integração, dockerizar a aplicação.
 
 ## Contribuições
 
