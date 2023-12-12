@@ -92,6 +92,7 @@ Siga os passos abaixo para instalar, configurar e executar a aplicação localme
 - Duração das reuniões entre no mínimo 30 minutos e no máximo duas horas;
 - Somente clientes podem criar agendamentos, corretores não podem;
 - Não é possível um cliente agendar uma reunião com um corretor que já está ocupado em outra reunião no mesmo horário;
+- Não é possível um cliente agendar uma reunião em uma sala de reunião que já está ocupada naquele mesmo horário;
 - Limite máximo de salas de reunião: 8 salas;
 - Limite máximo de reuniões que corretores podem participar em um único dia: 5 reuniões.
 
