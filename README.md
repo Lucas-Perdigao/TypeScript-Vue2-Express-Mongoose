@@ -94,13 +94,13 @@ Siga os passos abaixo para instalar, configurar e executar a aplicação localme
 - Não é possível um cliente agendar uma reunião com um corretor que já está ocupado em outra reunião no mesmo horário;
 - Não é possível um cliente agendar uma reunião em uma sala de reunião que já está ocupada naquele mesmo horário;
 - Limite máximo de salas de reunião: 8 salas;
-- Limite máximo de reuniões que corretores podem participar em um único dia: 5 reuniões.
+- Limite máximo de reuniões que corretores podem participar em um único dia: 5 reuniões;
+- As rotas de busca das entidades possuem paginação e filtros (ver documentação dos endpoints do Swagger).
 
 ## Observações
 
 - Somente a rota de login e a de criação de usuários são abertas (ver documentação dos endpoints do Swagger);
 - É necessário rodar os dois cronjobs para que a aplicação cumpra seus requisitos;
-- As rotas de GET possuem paginação e filtragem (ver documentação dos endpoints do Swagger).
 - Coisas que gostaria de fazer mas não tive tempo: criar o seeder das reuniões, regex nas queries de busca, 100% de cobertura de teste, um error handler mais robusto, testes de integração, dockerizar a aplicação.
 
 ## Contribuições
