@@ -24,6 +24,7 @@ O Sistema de Agendamento de Reuniões é uma aplicação que permite o agendamen
 - Node-cron
 - Swagger
 - Yup
+- Bcrypt
 
 ## Banco de Dados
 
