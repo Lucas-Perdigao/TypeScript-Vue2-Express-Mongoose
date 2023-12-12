@@ -17,6 +17,7 @@ O Sistema de Agendamento de Reuniões é uma aplicação que permite o agendamen
 
 ### Tecnologias Utilizadas
 
+- Node 18
 - Typescript
 - Express
 - Mongoose
