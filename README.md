@@ -35,6 +35,13 @@ Foi utilizado o MongoDB Atlas para essa aplicação. É necessário possuir uma 
 
 Observar o arquivo ".envexample" na aplicação e criar o seu próprio arquivo .env seguindo o mesmo modelo de variáveis, preenchendo a sua string de conexão do MongoDB, a porta pela qual será feita a conexão da sua api, e uma chave secreta aleatória para a geração do token.
 
+Exemplo:
+```bash
+MONGO_URL="mongodb+srv://ReservaBP:reserva1234@reservabp.iegh89o.mongodb.net/"
+PORT=3030
+JWT_SECRET_KEY=1a908sdf7as8df****
+```
+
 ## Rotas do Insomnia
 
 Exemplos de chamadas das rotas usando o Insomnia no arquivo "Insomnia_routes.json" na raíz da aplicação, e poderão ser importados para o seu Insomnia para uso.
