@@ -39,7 +39,7 @@ Exemplo:
 ```bash
 MONGO_URL="mongodb+srv://ReservaBP:reserva1234@reservabp.iegh89o.mongodb.net/"
 PORT=3030
-JWT_SECRET_KEY=1a908sdf7as8df****
+JWT_SECRET_KEY=1a908sdf7as8df
 ```
 
 ## Rotas do Insomnia
