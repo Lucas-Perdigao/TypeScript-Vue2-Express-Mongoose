@@ -83,7 +83,7 @@ Siga os passos abaixo para instalar, configurar e executar a aplicação localme
      ```
 
 8. **Documentação dos endpoints pelo Swagger:**
-   - Uma vez com a API rodando localmente, acesse http://localhost:(sua porta)/api-docs para visualizar a documentação dos endpoints.
+   - Uma vez com a API rodando localmente, acesse http://localhost:<suaPortaAqui>/api-docs para visualizar a documentação dos endpoints.
 
 ## Requisitos
 
