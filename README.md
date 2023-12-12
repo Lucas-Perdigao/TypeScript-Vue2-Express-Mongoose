@@ -1,6 +1,6 @@
 # Sistema de Agendamento de Reuniões
 
-Este é o README.md para o projeto **Sistema de Agendamento de Reuniões** hospedado no GitHub.
+Este é o README.md para o projeto **Sistema de Agendamento de Reuniões** da Bem Protege.
 
 ## Descrição do Projeto
 
