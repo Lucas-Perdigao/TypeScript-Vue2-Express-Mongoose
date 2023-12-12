@@ -101,7 +101,3 @@ Siga os passos abaixo para instalar, configurar e executar a aplicação localme
 ## Contribuições
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou enviar pull requests para melhorar este projeto.
-
-## Licença
-
-Este projeto é licenciado sob a [MIT License](LICENSE).
