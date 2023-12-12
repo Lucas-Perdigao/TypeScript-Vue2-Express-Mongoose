@@ -20,6 +20,7 @@ O Sistema de Agendamento de Reuniões é uma aplicação que permite o agendamen
 - Typescript
 - Express
 - Mongoose
+- Jest
 - Node-cron
 - Swagger
 - Yup
